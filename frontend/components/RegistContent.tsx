@@ -41,6 +41,8 @@ function Article(props){
     return <article>
                 <h2>{props.title}</h2>
                     {props.body}
+                <p><button /*onClick={Update}*/>수정</button></p>
+                <button /*onClick={Delete}*/>삭제</button>
             </article>
 }
 
