@@ -1,13 +1,7 @@
-from typing import Optional
-
 from fastapi import FastAPI
+from router import mainview, login
 
 app = FastAPI()
 
-@app.get("/")
-def read_root():
-    return {"Hello": "FastAPI"}
-
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Optional[str] = None):
-    return {"item_id": item_id, "q": q}
+app.include_router(mainview.router)
+app.include_router(login.router)
