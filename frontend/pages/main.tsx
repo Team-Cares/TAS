@@ -29,15 +29,15 @@ const Main: NextPage = () => {
   const [topics, setTopics] = React.useState<Array<Topic>>([{
     id: 0,
     title: "상담1",
-    contents: "코딩하기 싫어요"
+    contents: "상담1 내용"
   },{
     id: 1,
     title: "상담2",
-    contents: "살기 싫어요"
+    contents: "상담2 내용"
   },{
     id: 2,
     title: "상담3",
-    contents: "토트넘 4등 기원"
+    contents: "상담3 내용"
   }])
   const [title, setTitle] = React.useState("")
   const [contents, setContents] = React.useState("")
@@ -62,13 +62,22 @@ const Main: NextPage = () => {
     onClose();
   }
 
-  const reOpen = (title, content) =>{
-    setTitle(title);
-    setContents(content);
+  const reOpen = (topic) =>{
+    setId(topic.id);
+    setTitle(topic.title);
+    setContents(topic.contents);
   }
 
   const updateTopics = () => {
-    
+    const newTopics = [...topics]
+    const updateTopics = {id, title, contents}
+    for(let i=0; i<topics.length; i++){
+      if(newTopics[i].id === id){
+        newTopics[i] = updateTopics;
+        break;
+      }
+    }
+    setTopics(newTopics);
     onClose();
   }
 
@@ -127,15 +136,16 @@ const Main: NextPage = () => {
             </AccordionButton>
             <AccordionPanel>
               {topic.contents}
-              <Button colorScheme='purple' mr={3} onClick={()=>{
-                setMode("Update");
+              <Button colorScheme='purple' mr={3} onClick={(event)=>{
+                event.preventDefault();
                 onOpen();
-                reOpen(topic.title, topic.contents);
+                reOpen(topic);
+                setMode("Update");
               }}>
                 수정
               </Button>
               <Button colorScheme='blue' mr={3} onClick={deleteTopics}>
-                삭제
+                삭제  
               </Button>
             </AccordionPanel>
           </AccordionItem>
