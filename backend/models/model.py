@@ -2,7 +2,6 @@ from uuid import UUID
 from typing import List, Tuple, Union
 from datetime import datetime
 from pydantic import BaseModel
-from fastapi import Body
 
 class User(BaseModel):
     name: str

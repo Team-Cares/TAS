@@ -1,7 +1,6 @@
 from datetime import datetime
 from uuid import uuid4
 from bson import ObjectId
-from pytz import timezone
 from fastapi.responses import JSONResponse
 from fastapi import APIRouter, HTTPException, status
 from fastapi.encoders import jsonable_encoder
