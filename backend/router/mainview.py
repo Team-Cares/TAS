@@ -1,13 +1,11 @@
-from cgitb import reset
 from datetime import datetime
-from uuid import UUID, uuid4
+from uuid import uuid4
 from bson import ObjectId
-from bson.binary import Binary, UuidRepresentation
 from pytz import timezone
 from fastapi.responses import JSONResponse
 from fastapi import APIRouter, HTTPException, status
 from fastapi.encoders import jsonable_encoder
-from models.model import QA,User
+from models.model import QA
 from config.db import db
 
 router = APIRouter()
@@ -36,26 +34,26 @@ async def createCounsel(req:QA):
     print(created_QA)
     return JSONResponse(content=jsonable_encoder(created_QA), status_code=status.HTTP_201_CREATED)
 
-@router.put("/user/{id}",tags=["QA"])
-async def updateCounsel(id:str, req:QA):
+@router.put("/user/{QA_id}",tags=["QA"])
+async def updateCounsel(QA_id:str, req:QA):
     data = req.dict()
     if data:
-        result = db['QA'].update_one({"_id":ObjectId(id)},{"$set":data})
+        result = db['QA'].update_one({"_id":ObjectId(QA_id)},{"$set":data})
         if result.modified_count == 1:
-            if (update_QA := db['QA'].find_one({"_id":ObjectId(id)})) is not None:
+            if (update_QA := db['QA'].find_one({"_id":ObjectId(QA_id)})) is not None:
                 update_QA['_id'] = str(update_QA['_id'])
                 return JSONResponse(content=jsonable_encoder(update_QA), status_code=status.HTTP_200_OK)
     else:
         return JSONResponse(status_code=status.HTTP_204_NO_CONTENT)
-    raise HTTPException(status_code=404, detail=f"QA {id} not found")
+    raise HTTPException(status_code=404, detail=f"QA {QA_id} not found")
     
-@router.delete("/user/{id}",tags=["QA"])
-def deleteCounsel(id:str):
+@router.delete("/user/{QA_id}",tags=["QA"])
+def deleteCounsel(QA_id:str):
     print(id)
     print(type(id))
-    delete_result = db['QA'].delete_one({"_id":ObjectId(id)})
+    delete_result = db['QA'].delete_one({"_id":ObjectId(QA_id)})
     print(delete_result.deleted_count)
     if delete_result.deleted_count == 1:
         return JSONResponse(status_code=status.HTTP_204_NO_CONTENT)
     else:
-        raise HTTPException(status_code=404, detail=f"QA {id} not found")
+        raise HTTPException(status_code=404, detail=f"QA {QA_id} not found")
