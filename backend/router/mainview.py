@@ -27,7 +27,7 @@ async def getCounsel(userid:str):
 async def createCounsel(req:QA):
     data = req.dict()
     data['QA_id'] = uuid4()
-    data["create_at"] = datetime.now(timezone('Asia/Seoul'))
+    data["create_at"] = datetime.now()
     QA_data = db['QA'].insert_one(jsonable_encoder(data))
     created_QA = db['QA'].find_one({"_id":QA_data.inserted_id})
     created_QA['_id'] = str(created_QA['_id'])
