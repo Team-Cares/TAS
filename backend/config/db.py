@@ -9,5 +9,5 @@ mongoPw = os.environ.get("MONGOPW")
 dbName = os.environ.get("DBNAME")
 
 MONGOURL = "mongodb+srv://" + mongoUserName +":"+quote(mongoPw)+"@cluster0.lcd2t.mongodb.net/?retryWrites=true&w=majority"
-client = MongoClient(MONGOURL , serverSelectionTimeoutMS=5000)
+client = MongoClient(MONGOURL , serverSelectionTimeoutMS=5000,  uuidRepresentation="standard")
 db = client[dbName]
