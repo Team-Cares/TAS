@@ -81,9 +81,16 @@ const Main: NextPage = () => {
     onClose();
   }
 
-  const deleteTopics = () => {
-
+  const deletetopics = (topic) =>{
+    const newDeleteTopics = [];
+    for(let i=0; i<topics.length; i++){
+      if(topics[i].id !== topic.id){
+        newDeleteTopics.push(topics[i]);
+      }
+    }
+    setTopics(newDeleteTopics);
   }
+
   let content = null;
   if(mode === "Create"){
     content = <Modal isOpen={isOpen} onClose={onClose}>
@@ -144,7 +151,11 @@ const Main: NextPage = () => {
               }}>
                 수정
               </Button>
-              <Button colorScheme='blue' mr={3} onClick={deleteTopics}>
+              <Button colorScheme='blue' mr={3} onClick={(event)=>{
+                event.preventDefault();
+                deletetopics(topic);
+                console.log(topics);
+              }}>
                 삭제  
               </Button>
             </AccordionPanel>
