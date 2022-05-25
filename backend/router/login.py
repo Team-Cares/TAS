@@ -23,37 +23,41 @@ async def getUser(userid:str):
 @router.post('/login', tags=["users"])
 async def postUser(req:User):
     user = req.dict()
-    result = db["user"].find_one({"phone_num":user["phone_num"]})
-    if result is None:
-        db["user"].insert_one(jsonable_encoder(user))
     randoms = str(random.randrange(1,9))
     for i in range(5):
         randoms += str(random.randrange(0,9))
-    token = dict()    
-    token["random_num"] = int(randoms)
-    token["created_at"] = datetime.now()
-    token["user"] = user
-    db["token"].insert_one(jsonable_encoder(token))
+    token = dict()
+    result = db['token'].find_one({"user":jsonable_encoder(user)})
+    if result is None:    
+        token["random_num"] = int(randoms)
+        token["created_at"] = datetime.now()
+        token["user"] = user
+        db["token"].insert_one(jsonable_encoder(token))
+    else:
+        db["token"].update_one({"user":jsonable_encoder(user)},{"token":int(randoms)})
     
     return JSONResponse(status_code=status.HTTP_200_OK)
 
-@router.post('/auth', tags=["users"])
+@router.post('/auth/{token}', tags=["users"])
 async def checkAuth(user:User, token:int):
-    datas = db["token"].find({"user":jsonable_encoder(user)},{"_id":0}).sort("created_at")
-    data = list(datas)[-1]
-    
-    if data['random_num'] == token:
-        recordTime = str(data['created_at']).replace('T',' ')
-        recordTime = datetime.strptime(recordTime,"%Y-%m-%d %H:%M:%S.%f")
-        nowTime = datetime.now()
-        if nowTime - recordTime < timedelta(minutes=5):
-            userDict = user.dict()
-            userData = db['user'].find_one({"phone_num":userDict['phone_num']})
-            userData['_id'] = str(userData['_id'])
-            return JSONResponse(content=jsonable_encoder(userData), status_code=status.HTTP_200_OK)
+    datas = list(db["token"].find({"user":jsonable_encoder(user)},{"_id":0}).sort("created_at"))
+    print(list(datas))
+    if list(datas) != []:
+        data = list(datas)[-1]
+        if data['random_num'] == token:
+            recordTime = str(data['created_at']).replace('T',' ')
+            recordTime = datetime.strptime(recordTime,"%Y-%m-%d %H:%M:%S.%f")
+            nowTime = datetime.now()
+            if nowTime - recordTime < timedelta(minutes=5):
+                userDict = user.dict()
+                result = db['user'].insert_one(jsonable_encoder(user))
+                userData = db['user'].find_one({"_id":result.inserted_id})
+                userData['_id'] = str(userData['_id'])
+                return JSONResponse(content=jsonable_encoder(userData), status_code=status.HTTP_200_OK)
+            else:
+                return JSONResponse(status_code=status.HTTP_408_REQUEST_TIMEOUT)
         else:
-            return JSONResponse(status_code=status.HTTP_408_REQUEST_TIMEOUT)
-    else:
-        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST)
-    
+            return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST)
+        
+    raise HTTPException(status_code=404, detail=f"user not found")
     
