@@ -16,9 +16,10 @@ class QA(BaseModel):
     QA_id: Union[UUID, None] = None
     title: str
     contents: str
-    status: str
-    create_at: Union[datetime, None] = None
-    reservation_at : Union[List[Tuple[datetime,datetime]],None] = None
+    status: Union[str, None] = None
+    created_at: Union[datetime, None] = None
+    updated_at: Union[datetime, None] = None
+    #reservation_at : Union[List[Tuple[datetime,datetime]],None] = None
     user: User
 
 

@@ -55,3 +55,5 @@ async def checkAuth(user:User, token:int):
             return JSONResponse(status_code=status.HTTP_408_REQUEST_TIMEOUT)
     else:
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST)
+    
+    
