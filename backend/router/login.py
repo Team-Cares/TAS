@@ -34,7 +34,9 @@ async def postUser(req:User):
         token["user"] = user
         db["token"].insert_one(jsonable_encoder(token))
     else:
-        db["token"].update_one({"user":jsonable_encoder(user)},{"token":int(randoms)})
+        nowTime = datetime.now()
+        print(nowTime)
+        db["token"].update_one({"user":jsonable_encoder(user)},{"$set":{"random_num":int(randoms),"created_at":nowTime}})
     
     return JSONResponse(status_code=status.HTTP_200_OK)
 
@@ -49,7 +51,6 @@ async def checkAuth(user:User, token:int):
             recordTime = datetime.strptime(recordTime,"%Y-%m-%d %H:%M:%S.%f")
             nowTime = datetime.now()
             if nowTime - recordTime < timedelta(minutes=5):
-                userDict = user.dict()
                 result = db['user'].insert_one(jsonable_encoder(user))
                 userData = db['user'].find_one({"_id":result.inserted_id})
                 userData['_id'] = str(userData['_id'])
