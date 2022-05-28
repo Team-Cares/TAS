@@ -24,7 +24,7 @@ interface Topic {
   contents: string;
 }
 
-const Main: NextPage = () => {
+const User: NextPage = () => {
   const [id, setId] = React.useState(3)
   const [topics, setTopics] = React.useState<Array<Topic>>([{
     id: 0,
@@ -62,7 +62,7 @@ const Main: NextPage = () => {
     onClose();
   }
 
-  const reOpen = (topic) =>{
+  const reOpen = (topic: Topic) =>{
     setId(topic.id);
     setTitle(topic.title);
     setContents(topic.contents);
@@ -81,7 +81,7 @@ const Main: NextPage = () => {
     onClose();
   }
 
-  const deletetopics = (topic) =>{
+  const deletetopics = (topic: Topic) =>{
     const newDeleteTopics = [];
     for(let i=0; i<topics.length; i++){
       if(topics[i].id !== topic.id){
@@ -167,4 +167,4 @@ const Main: NextPage = () => {
   )
 }
 
-export default Main;
+export default User;
