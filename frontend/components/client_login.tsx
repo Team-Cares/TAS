@@ -72,7 +72,7 @@ const Client_login: React.FC = () => {
             </form>
             <form onSubmit = {CodeSubmitHandler} id = "code" style = {{display: "none"}}>
                     <p><input type = "text" placeholder = '인증번호' value = {Code} onChange={CodeHandler}/></p>
-                    <p><button id = "btn" type="submit" onClick = {Click}>확인</button></p>
+                    <p><button id = "btn" type="submit" >확인</button></p>
             </form>
         </div>
     )
