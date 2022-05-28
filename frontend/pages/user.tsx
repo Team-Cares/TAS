@@ -17,6 +17,8 @@ import {
   Textarea,
   useDisclosure
 } from '@chakra-ui/react';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { currentUserIDState, currentUserQuery } from '../contexts/user';
 
 interface Topic {
   id: number;
@@ -43,10 +45,14 @@ const User: NextPage = () => {
   const [contents, setContents] = React.useState("")
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [mode, setMode] = React.useState("Create")
+  const user = useRecoilValue(currentUserQuery)
 
   const handleTitle: React.ChangeEventHandler<HTMLInputElement> = (event) => setTitle(event.target.value)
   const handleContents: React.ChangeEventHandler<HTMLTextAreaElement> = (event) => setContents(event.target.value)
 
+  React.useEffect(() => {
+    console.log(user)
+  }, [])
 
   
   const addTopics = () => {

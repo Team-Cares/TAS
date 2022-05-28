@@ -14,6 +14,9 @@ import {
     PinInputField,
     usePinInput
 } from '@chakra-ui/react';
+import { useRouter } from 'next/router';
+import { useRecoilState } from 'recoil';
+import { currentUserIDState } from '../contexts/user';
 
 const loginUrl = "http://127.0.0.1:8000/login";
 const authUrl = "http://127.0.0.1:8000/auth";
@@ -23,7 +26,8 @@ export const Home: NextPage = () => {
     const [phoneNumber, setPhoneNumber] = useState("");
     const [code, setCode] = useState("");
     const [isCode, setIsCode] = useState(true);
-    const ab = 123;
+    const [_, setUserId] = useRecoilState(currentUserIDState);
+    const router = useRouter()
     const handleName: React.ChangeEventHandler<HTMLInputElement> = (event) => {
         setName(event.target.value);
     }
@@ -54,7 +58,6 @@ export const Home: NextPage = () => {
     }
 
     const handleAuth: React.FormEventHandler<HTMLFormElement> = (event) => {
-            
         event.preventDefault();
         const data = {
             name: name,
@@ -62,12 +65,9 @@ export const Home: NextPage = () => {
         }
         
         axios.post(authUrl+`/${code}`, data).then((res) => {
-            console.log(res.status);
-            console.log(res.data._id);
-            
             if (res.status == 200){
-                console.log("good");
-                window.location.assign('/user');
+                setUserId(res.data._id)
+                router.push('/user')
             }
         }).catch((e)=>{
             let errorCode = e.response.status;
