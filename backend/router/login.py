@@ -4,6 +4,7 @@ from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from datetime import datetime, timedelta
 
+from service.sms import sendSMS
 from models.model import User
 from config.db import db
 import random
@@ -38,6 +39,8 @@ async def postUser(req:User):
         print(nowTime)
         db["token"].update_one({"user":jsonable_encoder(user)},{"$set":{"random_num":int(randoms),"created_at":nowTime}})
     
+    print(user["phone_num"],randoms)
+    #print(sendSMS(user["phone_num"],randoms))
     return JSONResponse(status_code=status.HTTP_200_OK)
 
 @router.post('/auth/{token}', tags=["users"])

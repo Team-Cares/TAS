@@ -4,7 +4,6 @@ from bson import ObjectId
 from fastapi.responses import JSONResponse
 from fastapi import APIRouter, HTTPException, status
 from fastapi.encoders import jsonable_encoder
-from typing import Union
 from models.model import QA
 from config.db import db
 
