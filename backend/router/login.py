@@ -38,9 +38,8 @@ async def postUser(req:User):
         nowTime = datetime.now()
         print(nowTime)
         db["token"].update_one({"user":jsonable_encoder(user)},{"$set":{"random_num":int(randoms),"created_at":nowTime}})
-    
     print(user["phone_num"],randoms)
-    #print(sendSMS(user["phone_num"],randoms))
+    # print(sendSMS(user["phone_num"],randoms))
     return JSONResponse(status_code=status.HTTP_200_OK)
 
 @router.post('/auth/{token}', tags=["users"])
@@ -53,7 +52,7 @@ async def checkAuth(user:User, token:int):
             recordTime = str(data['created_at']).replace('T',' ')
             recordTime = datetime.strptime(recordTime,"%Y-%m-%d %H:%M:%S.%f")
             nowTime = datetime.now()
-            if nowTime - recordTime < timedelta(minutes=5):
+            if nowTime - recordTime < timedelta(minutes=1):
                 result = db['user'].insert_one(jsonable_encoder(user))
                 userData = db['user'].find_one({"_id":result.inserted_id})
                 userData['_id'] = str(userData['_id'])
