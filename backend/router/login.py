@@ -1,3 +1,4 @@
+from asyncio.windows_events import NULL
 from bson import ObjectId
 from fastapi import APIRouter, status, HTTPException
 from fastapi.responses import JSONResponse
@@ -29,7 +30,7 @@ async def postUser(req:User):
         randoms += str(random.randrange(0,9))
     token = dict()
     result = db['token'].find_one({"user":jsonable_encoder(user)})
-    if result is None:    
+    if result is None:
         token["random_num"] = int(randoms)
         token["created_at"] = datetime.now()
         token["user"] = user
@@ -52,9 +53,13 @@ async def checkAuth(user:User, token:int):
             recordTime = str(data['created_at']).replace('T',' ')
             recordTime = datetime.strptime(recordTime,"%Y-%m-%d %H:%M:%S.%f")
             nowTime = datetime.now()
-            if nowTime - recordTime < timedelta(minutes=1):
-                result = db['user'].insert_one(jsonable_encoder(user))
-                userData = db['user'].find_one({"_id":result.inserted_id})
+            if nowTime - recordTime < timedelta(minutes=5):
+                checkUser = db['user'].find_one({"phone_num":user.phone_num})
+                if checkUser is None:
+                    result = db['user'].insert_one(jsonable_encoder(user))
+                    userData = db['user'].find_one({"_id":result.inserted_id})
+                else:
+                    userData = checkUser
                 userData['_id'] = str(userData['_id'])
                 return JSONResponse(content=jsonable_encoder(userData), status_code=status.HTTP_200_OK)
             else:
