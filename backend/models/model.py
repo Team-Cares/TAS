@@ -22,6 +22,16 @@ class QA(BaseModel):
     #reservation_at : Union[List[Tuple[datetime,datetime]],None] = None
     user: User
 
+# class QA(BaseModel):
+#     QA_id: Union[UUID, None] = None
+#     title: str
+#     contents: str
+#     status: Union[str, None] = None
+#     created_at: Union[datetime, None] = None
+#     updated_at: Union[datetime, None] = None
+#     user: User
+#     manager_id: str 
+
 class Manager(BaseModel):
     M_id = str
     id: str
