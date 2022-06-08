@@ -23,6 +23,15 @@
   width: 30vw;
 }
 
+.logInForm{
+  border: none;
+  padding: 30px;
+  border-radius: 5px;
+  width: 400px;
+  height: 650px;
+  background : none;
+}
+
 .pinSubmit{
   background-color: #FFC800;
   font-size: 15px;
@@ -53,8 +62,16 @@
   align-items: center;
 }
 
+.Submit{
+  width: 50px;
+  height: 35px;
+  border-radius: 5px;
+  background-color: #FFC800;
+  color: white;
+}
+
 .pinArea{
-  width:340px;
+  /* width:100%; */
   height:100%;
   display: flex;
   justify-content: space-around;
@@ -64,17 +81,15 @@
 .pin_submit{
   display: flex;
   align-items: center;
-  padding-top: 12%;
-  width: 340px;
-  justify-content: space-around;
+  padding: 35px;
 }
 
-.Submit{
-  width: 50px;
-  height: 35px;
-  border-radius: 5px;
-  background-color: #FFC800;
-  color: white;
+.Pin{
+  width: 17vw;
+}
+
+.pin_btn{
+  margin-left: 2%;
 }
 
 .timer{

@@ -26,7 +26,7 @@ import { useRecoilState } from 'recoil';
 import { currentUserIDState } from '../contexts/user';
 import { NodeNextRequest } from 'next/dist/server/base-http/node';
 import { now } from 'lodash';
-
+import style from '../styles/Home.module.css';
 
 const loginUrl = "http://127.0.0.1:8000/login";
 const authUrl = "http://127.0.0.1:8000/auth";
@@ -39,11 +39,11 @@ export const Home: NextPage = () => {
     const [isTime, setIsTime] = useState(true);
     const [_, setUserId] = useRecoilState(currentUserIDState);
     const router = useRouter()
-    const [min, setMin] = useState(5);
+    const [min, setMin] = useState("05");
     const [sec, setSec] = useState("00");
     const [timer, setTimer] = useState("");
-    const time = useRef(15);
-    const timerld = useRef(null);
+    const time = useRef(299);
+    const timerld = useRef<number>(0);
 
     const handleName: React.ChangeEventHandler<HTMLInputElement> = (event) => {
         setName(event.target.value);
@@ -71,7 +71,9 @@ export const Home: NextPage = () => {
                 "Access-Control-Allow-Origin": "http://127.0.0.1:3000"
             }
         }).then((res) => {
-            setIsCode(false)
+            if ((name.value !== null)&&(phoneNumber.value !== null)){
+                setIsCode(false)
+            }
             console.log(res)
         })
     }
@@ -121,8 +123,8 @@ export const Home: NextPage = () => {
     const Timer = () => {
         useEffect(() => {
             timerld.current = setInterval(() => {
-                setMin(parseInt(time.current / 60));
-                setSec(time.current % 60);
+                setMin("0"+String(parseInt(String(time.current / 60))));
+                setSec(String(time.current % 60));
                 time.current -= 1;
             }, 1000);
 
@@ -137,68 +139,92 @@ export const Home: NextPage = () => {
         }, [sec]);
 
         return(
-            <div>{min} : {sec}</div>
+            <div className={style.timer}>{min} : {sec}</div>
         )
     }
 
     return (
-        <div>
-            <form onSubmit={isCode ? handleLogin : handleAuth}>
-                <FormControl isRequired>
-                    <FormLabel htmlFor='name'>Name</FormLabel>
-                    <Input
-                        id='name'
-                        value={name}
-                        onChange={handleName}
-                    />
-                </FormControl>
-                <FormControl isRequired>
-                    <FormLabel htmlFor='phoneNumber'>PhoneNumber</FormLabel>
-                    <InputGroup>
-                        <InputLeftAddon children='+82' />
-                        <Input
-                            id='phoneNumber'
-                            value={phoneNumber}
-                            onChange={handlePhoneNumber}
-                            type='tel'
-                            placeholder='phone number'
-                        />
-                    </InputGroup>
-                </FormControl>
-                {
-                    isCode ? (
-                        <Button
-                            type='submit'
-                            colorScheme='blue'
-                            onClick={startTimer}
-                        >
-                            인증번호 받기
-                        </Button>
-                    ) : (
-                        <div>
-                            <PinInput otp value={code} onChange={handleCode}>
-                                <PinInputField />
-                                <PinInputField />
-                                <PinInputField />
-                                <PinInputField />
-                                <PinInputField />
-                                <PinInputField />
-                            </PinInput>
-                            <Button type='submit' colorScheme='blue'>
-                                확인
-                            </Button>
-                            {/**/}
+        <div className={style.container}>
+            <div className={style.total}>
+                <div className={style.logInArea}>
+                    <form onSubmit={isCode ? handleLogin : handleAuth}>
+                        <div className={style.headText}>
+                            <div>
+                                <h1 className={style.textH}>T A S</h1>
+                            </div>
                         </div>
-                    )
-                }
-                {
-                    isTime ? (
-                        <div></div>
-                    ) : (
-                        <Timer/>
-                    )
-                }        
-            </form>
+                        <FormControl isRequired>
+                            <FormLabel htmlFor='name' style={{
+                                color: 'white'
+                            }}>Name</FormLabel>
+                            <Input
+                                id='name'
+                                value={name}
+                                onChange={handleName}
+                                placeholder='name'
+                                style={{color: 'white'}}
+                            />
+                        </FormControl>
+                        <FormControl isRequired>
+                            <FormLabel htmlFor='phoneNumber' style={{
+                                color: 'white'
+                            }}>PhoneNumber</FormLabel>
+                            <InputGroup>
+                                <InputLeftAddon children='+82' />
+                                <Input
+                                    id='phoneNumber'
+                                    value={phoneNumber}
+                                    onChange={handlePhoneNumber}
+                                    type='tel'
+                                    placeholder='phone number'
+                                    style={{color: 'white'}}
+                                />
+                            </InputGroup>
+                        </FormControl>
+                        {
+                            isCode ? (
+                                <button 
+                                    className={style.pinSubmit}
+                                    type='submit'
+                                    onClick={startTimer}
+                                >
+                                    인증번호 받기
+                                </button>
+                            ) : (
+                                <div className={style.pinInput}>
+                                    <div className={style.pinArea}>
+                                        <div className={style.pin_submit}>
+                                            <div className={style.Pin}>
+                                                <PinInput
+                                                    otp value={code} 
+                                                    onChange={handleCode} 
+                                                >
+                                                    <PinInputField style={{opacity: '0.8', borderColor: '#FFC800', color: 'black', backgroundColor: 'white'}}/>
+                                                    <PinInputField style={{opacity: '0.8', borderColor: '#FFC800', color: 'black', backgroundColor: 'white'}}/>
+                                                    <PinInputField style={{opacity: '0.8', borderColor: '#FFC800', color: 'black', backgroundColor: 'white'}}/>
+                                                    <PinInputField style={{opacity: '0.8', borderColor: '#FFC800', color: 'black', backgroundColor: 'white'}}/>
+                                                    <PinInputField style={{opacity: '0.8', borderColor: '#FFC800', color: 'black', backgroundColor: 'white'}}/>
+                                                    <PinInputField style={{opacity: '0.8', borderColor: '#FFC800', color: 'black', backgroundColor: 'white'}}/>
+                                                </PinInput>
+                                            </div>
+                                            <button className={style.Submit} type='submit'>
+                                                <p>확인</p>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            )
+                        }
+                        {
+                            isTime ? (
+                                <div></div>
+                            ) : (
+                                <Timer/>
+                            )
+                        }        
+                    </form>
+                </div>
+            </div>
             {
                 isPinErr ? (
                     <div></div>
