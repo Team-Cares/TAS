@@ -1,0 +1,45 @@
+.mainbody{
+    margin: 0;
+    width: 100vw;
+    height: 100vh;
+    background-image: url("../img/header-bg.jpg");
+    background-size: cover;
+    background-position: center;
+    opacity: 1;
+}
+
+.maincontent{
+    width: 70%;
+    height: 50%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 5%;
+    color: white;
+}
+
+.titleBtn{
+    border-bottom: solid 1px white;
+}
+
+.create{
+    width: 5%;
+    border-top: none;
+    margin-bottom: 3%;
+}
+
+.createbtn{
+    color: #ffc800;
+    font-size: 170%;
+}
+
+.AccordionPanel{
+    width: 100%;
+}
+
+.contentlist{
+    width: 100%;
+}
+
+.btn{
+    float: right;
+}

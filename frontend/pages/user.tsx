@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import type { NextPage } from 'next'
 import axios from 'axios';
+import style from '../styles/User.module.css'
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash, faHighlighter, faCirclePlus} from "@fortawesome/free-solid-svg-icons";
 import {
   Accordion,
   AccordionButton,
@@ -185,36 +188,47 @@ const User: NextPage = () => {
 
   // rendering elements
   return (
-    <div>
-      <Accordion>
-        <AccordionItem>
-          <AccordionButton onClick={onOpen}>
-            📑
-          </AccordionButton>
-        </AccordionItem>
-        {QaDatas.map((QaData) => (
-          <AccordionItem key={QaData.QA_id}>
-            <AccordionButton>
-              {QaData.title}
+    <div className = {style.mainbody}>
+      <div className = {style.maincontent}>
+        <Accordion className = {style.Accordion}>
+          <AccordionItem className = {style.create}>
+            <AccordionButton onClick={(event)=>{
+              event.preventDefault();
+              onOpen();
+              setMode("Create");
+            }}>
+              <FontAwesomeIcon icon={faCirclePlus} className = {style.createbtn}/>
             </AccordionButton>
-            <AccordionPanel>
-              {QaData.contents}
-              <Button colorScheme='purple' mr={3} onClick={(event)=>{
-                event.preventDefault();
-                onOpen();
-                reOpen(QaData);
-                setMode("Update");
-              }}>수정</Button>
-
-              <Button colorScheme='blue' mr={3} onClick={(event)=>{
-                event.preventDefault();
-                deletetopics(QaData.QA_id);
-              }}>삭제</Button>
-            </AccordionPanel>
           </AccordionItem>
-        ))}
-      </Accordion>
-      {content}
+          {QaDatas.map((Qadata) => (
+            <AccordionItem key={Qadata.QA_id}>
+              <AccordionButton className = {style.titleBtn}>
+                {Qadata.title}
+              </AccordionButton>
+              <div className = {style.contentlist}>
+              <AccordionPanel className = {style.AccordionPanel}>
+                {Qadata.contents}
+                  <Button className = {style.btn} colorScheme='#ffab00;' mr={3} onClick={(event)=>{
+                    event.preventDefault();
+                    onOpen();
+                    reOpen(Qadata);
+                    setMode("Update");
+                  }}>
+                    <FontAwesomeIcon icon={faHighlighter} />
+                  </Button>
+                  <Button className = {style.btn} colorScheme='#ffab00;' mr={3} onClick={(event)=>{
+                    event.preventDefault();
+                    deletetopics(Qadata.QA_id);
+                  }}>
+                    <FontAwesomeIcon icon={faTrash} />
+                  </Button>
+              </AccordionPanel>
+              </div>
+            </AccordionItem>
+          ))}
+        </Accordion>
+        {content}
+      </div>
     </div>
   )
 }
