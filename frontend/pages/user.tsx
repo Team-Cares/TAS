@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import type { NextPage } from 'next'
+import axios from 'axios';
 import {
   Accordion,
   AccordionButton,
@@ -19,84 +20,132 @@ import {
 } from '@chakra-ui/react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { currentUserIDState, currentUserQuery } from '../contexts/user';
+import { Server } from 'http';
+import { create } from 'domain';
 
-interface Topic {
-  id: number;
+interface QaData {
+  QA_id: string;
   title: string;
   contents: string;
+  status: string;
+  created_at: string;
+  updated_at: string;
+  user: {
+    name: string;
+    phone_num: string;
+  }
+  id: number;
 }
 
 const User: NextPage = () => {
-  const [id, setId] = React.useState(3)
-  const [topics, setTopics] = React.useState<Array<Topic>>([{
-    id: 0,
-    title: "상담1",
-    contents: "상담1 내용"
-  },{
-    id: 1,
-    title: "상담2",
-    contents: "상담2 내용"
-  },{
-    id: 2,
-    title: "상담3",
-    contents: "상담3 내용"
-  }])
   const [title, setTitle] = React.useState("")
   const [contents, setContents] = React.useState("")
-  const { isOpen, onOpen, onClose } = useDisclosure()
   const [mode, setMode] = React.useState("Create")
-  const user = useRecoilValue(currentUserQuery)
+  const [QaDatas, setQaDatas] = React.useState<Array<QaData>>([]) 
+  const [targetID, setTargetID] = React.useState("");
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const userinfo = useRecoilValue(currentUserQuery)
+  const tmpQaDatas : any[] = [];
 
   const handleTitle: React.ChangeEventHandler<HTMLInputElement> = (event) => setTitle(event.target.value)
   const handleContents: React.ChangeEventHandler<HTMLTextAreaElement> = (event) => setContents(event.target.value)
-
+  
+  const ServerUrl = 'http://127.0.0.1:8000/user/' + String(userinfo._id);
+  const CreateUrl = 'http://127.0.0.1:8000/user/create';
+  const UpdateUrl = 'http://127.0.0.1:8000/user/'
+  
   React.useEffect(() => {
-    console.log(user)
+    PullData()
   }, [])
 
-  
+  // Originally Pulling data from DB
+  // And then, saved data called "QaDatas"
+  const PullData = () => {
+    axios.get(ServerUrl,{
+      headers: {
+        "Access-Control-Allow-Origin": "http://127.0.0.1:3000"
+      }
+    }).then((res) => {
+        for(let i=0; i<res.data.length; i++){
+          tmpQaDatas.push(res.data[i]);
+        }
+        setQaDatas(tmpQaDatas);
+      }
+    )
+  } 
+
+  // Create Item
   const addTopics = () => {
-    const topic: Topic = {
-      id: id,
+    const data = {
       title,
-      contents
+      contents,
+      user: {
+        name : userinfo.name,
+        phone_num : userinfo.phone_num
+      }
     }
-    setId((id) => id + 1);
-    setTopics((topics) => ([...topics, topic]));
-    setTitle("")
-    setContents("")
+
+    axios.post(CreateUrl, data, {
+      headers: {
+          "Access-Control-Allow-Origin": "http://127.0.0.1:3000"
+      }
+    }).then((res) => {
+        setTitle("");
+        setContents("");
+        PullData();//Ready to Read Item
+    })
     onClose();
   }
 
-  const reOpen = (topic: Topic) =>{
-    setId(topic.id);
+  // Update Item
+  const updateTopics = (target_id: String) => {
+    const newTopics = [...QaDatas]
+    setQaDatas(newTopics);
+    
+    const data = {
+      QA_id: target_id,
+      title,
+      contents,
+    }
+    
+    let updateurl = UpdateUrl + String(target_id);
+    axios.put(updateurl, data, {
+      headers: {
+        "Access-Control-Allow-Origin": "http://127.0.0.1:3000"
+      }
+    }).then((res) => {
+      console.log(res);
+      PullData();//Ready to Read Item
+    })
+    onClose();
+    
+    // Setting empty variable & Ready to Create mode
+    setTitle("");
+    setContents("");
+    setMode("Create");
+  }
+  
+  // Delete Item
+  const deletetopics = (target_id:string) => {
+    let url = UpdateUrl + String(target_id);
+    axios.delete(url, {
+      headers:{
+        "Access-Control-Allow-Origin": "http://127.0.0.1:3000"
+      }
+    }).then((res) => {
+      console.log(res);
+      PullData();//Ready to Read Item
+    })
+  }
+
+  // Targeting Data and ready to open modal
+  const reOpen = (topic: QaData) =>{
+    setTargetID(topic.QA_id);
     setTitle(topic.title);
     setContents(topic.contents);
   }
-
-  const updateTopics = () => {
-    const newTopics = [...topics]
-    const updateTopics = {id, title, contents}
-    for(let i=0; i<topics.length; i++){
-      if(newTopics[i].id === id){
-        newTopics[i] = updateTopics;
-        break;
-      }
-    }
-    setTopics(newTopics);
-    onClose();
-  }
-
-  const deletetopics = (topic: Topic) =>{
-    const newDeleteTopics = [];
-    for(let i=0; i<topics.length; i++){
-      if(topics[i].id !== topic.id){
-        newDeleteTopics.push(topics[i]);
-      }
-    }
-    setTopics(newDeleteTopics);
-  }
-
+  
+  // Process Mode change parts
   let content = null;
   if(mode === "Create"){
     content = <Modal isOpen={isOpen} onClose={onClose}>
@@ -126,7 +175,7 @@ const User: NextPage = () => {
         <Textarea value={contents} onChange={handleContents}/>
       </ModalBody>
       <ModalFooter>
-        <Button colorScheme='blue' mr={3} onClick={updateTopics}>
+        <Button colorScheme='blue' mr={3} onClick={()=>{updateTopics(targetID)}}>
           수정
         </Button>
       </ModalFooter>
@@ -134,6 +183,7 @@ const User: NextPage = () => {
   </Modal>
   }
 
+  // rendering elements
   return (
     <div>
       <Accordion>
@@ -142,28 +192,24 @@ const User: NextPage = () => {
             📑
           </AccordionButton>
         </AccordionItem>
-        {topics.map((topic) => (
-          <AccordionItem key={topic.id}>
+        {QaDatas.map((QaData) => (
+          <AccordionItem key={QaData.QA_id}>
             <AccordionButton>
-              {topic.title}
+              {QaData.title}
             </AccordionButton>
             <AccordionPanel>
-              {topic.contents}
+              {QaData.contents}
               <Button colorScheme='purple' mr={3} onClick={(event)=>{
                 event.preventDefault();
                 onOpen();
-                reOpen(topic);
+                reOpen(QaData);
                 setMode("Update");
-              }}>
-                수정
-              </Button>
+              }}>수정</Button>
+
               <Button colorScheme='blue' mr={3} onClick={(event)=>{
                 event.preventDefault();
-                deletetopics(topic);
-                console.log(topics);
-              }}>
-                삭제  
-              </Button>
+                deletetopics(QaData.QA_id);
+              }}>삭제</Button>
             </AccordionPanel>
           </AccordionItem>
         ))}
