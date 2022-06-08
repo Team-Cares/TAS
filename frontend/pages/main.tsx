@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import type { NextPage } from 'next'
+import style from '../styles/User.module.css'
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash, faHighlighter, faCirclePlus} from "@fortawesome/free-solid-svg-icons";
 import {
   Accordion,
   AccordionButton,
@@ -48,7 +51,7 @@ const Main: NextPage = () => {
   const handleContents: React.ChangeEventHandler<HTMLTextAreaElement> = (event) => setContents(event.target.value)
 
 
-  
+  //상담 내용을 추가하는 함수
   const addTopics = () => {
     const topic: Topic = {
       id: id,
@@ -61,13 +64,13 @@ const Main: NextPage = () => {
     setContents("")
     onClose();
   }
-
+  //수정버튼을 눌렀을때 기존의 제목과 내용을 가져오는 함수
   const reOpen = (topic) =>{
     setId(topic.id);
     setTitle(topic.title);
     setContents(topic.contents);
   }
-
+  //기존의 내용을 수정시키는 함수
   const updateTopics = () => {
     const newTopics = [...topics]
     const updateTopics = {id, title, contents}
@@ -80,7 +83,7 @@ const Main: NextPage = () => {
     setTopics(newTopics);
     onClose();
   }
-
+  //삭제 함수
   const deletetopics = (topic) =>{
     const newDeleteTopics = [];
     for(let i=0; i<topics.length; i++){
@@ -93,7 +96,7 @@ const Main: NextPage = () => {
 
   let content = null;
   if(mode === "Create"){
-    content = <Modal isOpen={isOpen} onClose={onClose}>
+    content = <Modal isOpen={isOpen} onClose={onClose} isCentered>
     <ModalOverlay />
     <ModalContent>
       <ModalHeader>상담 생성</ModalHeader>
@@ -110,7 +113,7 @@ const Main: NextPage = () => {
     </ModalContent>
   </Modal>
   }else if(mode === "Update"){
-    content = <Modal isOpen={isOpen} onClose={onClose}>
+    content = <Modal isOpen={isOpen} onClose={onClose} isCentered>
     <ModalOverlay />
     <ModalContent>
       <ModalHeader>상담 수정</ModalHeader>
@@ -127,42 +130,50 @@ const Main: NextPage = () => {
     </ModalContent>
   </Modal>
   }
-
+  //메인 코드
   return (
-    <div>
-      <Accordion>
-        <AccordionItem>
-          <AccordionButton onClick={onOpen}>
-            📑
-          </AccordionButton>
-        </AccordionItem>
-        {topics.map((topic) => (
-          <AccordionItem key={topic.id}>
-            <AccordionButton>
-              {topic.title}
+    <div className = {style.mainbody}>
+      <div className = {style.maincontent}>
+        <Accordion className = {style.Accordion}>
+          <AccordionItem className = {style.create}>
+            <AccordionButton onClick={(event)=>{
+              event.preventDefault();
+              onOpen();
+              setMode("Create");
+            }}>
+              <FontAwesomeIcon icon={faCirclePlus} className = {style.createbtn}/>
             </AccordionButton>
-            <AccordionPanel>
-              {topic.contents}
-              <Button colorScheme='purple' mr={3} onClick={(event)=>{
-                event.preventDefault();
-                onOpen();
-                reOpen(topic);
-                setMode("Update");
-              }}>
-                수정
-              </Button>
-              <Button colorScheme='blue' mr={3} onClick={(event)=>{
-                event.preventDefault();
-                deletetopics(topic);
-                console.log(topics);
-              }}>
-                삭제  
-              </Button>
-            </AccordionPanel>
           </AccordionItem>
-        ))}
-      </Accordion>
-      {content}
+          {topics.map((topic) => (
+            <AccordionItem key={topic.id}>
+              <AccordionButton className = {style.titleBtn}>
+                {topic.title}
+              </AccordionButton>
+              <div className = {style.contentlist}>
+              <AccordionPanel className = {style.AccordionPanel}>
+                {topic.contents}
+                  <Button className = {style.btn} colorScheme='#ffab00;' mr={3} onClick={(event)=>{
+                    event.preventDefault();
+                    onOpen();
+                    reOpen(topic);
+                    setMode("Update");
+                  }}>
+                    <FontAwesomeIcon icon={faHighlighter} />
+                  </Button>
+                  <Button className = {style.btn} colorScheme='#ffab00;' mr={3} onClick={(event)=>{
+                    event.preventDefault();
+                    deletetopics(topic);
+                    console.log(topics);
+                  }}>
+                    <FontAwesomeIcon icon={faTrash} />
+                  </Button>
+              </AccordionPanel>
+              </div>
+            </AccordionItem>
+          ))}
+        </Accordion>
+        {content}
+      </div>
     </div>
   )
 }

@@ -1,10 +1,18 @@
 import type { NextPage } from 'next'
-import Client_login from '../components/client_login'
+
 
 const Home: NextPage = () => {
+  const title = "abc";
+  const handleClick = () => {
+    navigate('/client', {
+      state: {
+        title: title,
+      },
+    });
+  }
   return (
     <div>
-      <Client_login />
+      <button onClick={handleClick}>버튼</button>
     </div>
   )
 }
