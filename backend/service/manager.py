@@ -7,29 +7,41 @@ from fastapi import status
 # 503 => Service Unavailable   (거절)
 # 
 
-# waiting, complete, proccesing, reject
+# waiting, complete, proccesing, reject, accept
 
+def getQAdata():
+    qaData = db['QA'].find_one({"status":"wait"},{"_id":0})
+    if qaData is not None:
+        print(qaData['QA_id'])
+        db['QA'].update_one({"QA_id":qaData['QA_id']},{"$set":{"status":"proccesing"}})
+        sendData = {
+            "QA_id": qaData['QA_id'],
+            "title": qaData['title'],
+            "contents": qaData['contents'],
+            "userName": qaData['user']['name'],
+            "phoneNum": qaData['user']['phone_num']
+        }
+        return sendData
+    else:
+        return None
 
 def completeQAdata(QA_id:str):
-    result = db['QA'].update_one({"QA_id":str('QA_id')},{"status":"complete"})
+    result = db['QA'].update_one({"QA_id":QA_id},{"$set":{"status":"complete"}})
     if result.modified_count == 1:
         return status.HTTP_200_OK
     else:
         return status.HTTP_404_NOT_FOUND
 
-def getQAdata():
-    qaData = db['QA'].find_one({"status":"wait"},{"_id":0})
-    db['QA'].update_one({"QA_id":str(qaData['QA_id'])},{"status":"proccesing"})
-    qaData['status'] = "processing"
-    
-    return qaData
-
 def rejectQAdata(QA_id:str):
-    result = db['QA'].update_one({"QA_id":str(QA_id)},{"status":"reject"})
+    result = db['QA'].update_one({"QA_id":str(QA_id)},{"$set":{"status":"reject"}})
     if result.modified_count == 1:
         return status.HTTP_503_SERVICE_UNAVAILABLE
     else:
         return status.HTTP_404_NOT_FOUND
-    
-def getGeneralM():
-    pass
+
+def acceptQAdata(QA_id:str):
+    result = db['QA'].update_one({"QA_id":str(QA_id)},{"$set":{"status":"accepte"}})
+    if result.modified_count == 1:
+        return status.HTTP_202_ACCEPTED
+    else:
+        return status.HTTP_404_NOT_FOUND

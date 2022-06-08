@@ -4,7 +4,7 @@ from bson import ObjectId
 from fastapi.responses import JSONResponse
 from fastapi import APIRouter, HTTPException, status
 from fastapi.encoders import jsonable_encoder
-from models.model import QA
+from models.model import QA, QA_update
 from config.db import db
 
 router = APIRouter()
@@ -29,17 +29,20 @@ async def createCounsel(req:QA):
     data["created_at"] = datetime.now()
     data["updated_at"] = data["created_at"]
     data['status'] = "wait"
-    db['QA'].insert_one(jsonable_encoder(data))
-    created_QA = db['QA'].find_one({"QA_id":str(data['QA_id'])},{"_id":0})
-    print(created_QA)
-    return JSONResponse(content=jsonable_encoder(created_QA), status_code=status.HTTP_201_CREATED)
+    result = db['QA'].insert_one(jsonable_encoder(data)).inserted_id
+    created_QA = db['QA'].find_one({"_id":result})
+    if created_QA is not None:
+        return JSONResponse(status_code=status.HTTP_201_CREATED)
+    return JSONResponse(status_code=status.HTTP_204_NO_CONTENT)
+    
 
 @router.put("/user/{QA_id}",tags=["QA"])
-async def updateCounsel(QA_id:str, req:QA):
-    data = req.dict()
+async def updateCounsel(QA_id:str, req:QA_update):
+    data = db['QA'].find_one({"QA_id":QA_id})
     if data:
         data['updated_at'] = datetime.now()
-        data['QA_id'] = str(data["QA_id"])
+        data['title'] = req.title
+        data['contents'] = req.contents
         result = db['QA'].update_one({"QA_id":QA_id},{"$set":data})
         print(result.modified_count)
         if result.modified_count == 1:

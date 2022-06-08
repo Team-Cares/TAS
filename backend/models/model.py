@@ -32,13 +32,18 @@ class QA(BaseModel):
 #     user: User
 #     manager_id: str 
 
+class QA_update(BaseModel):
+    title: str
+    contents: str
+
 class Manager(BaseModel):
-    M_id = str
+    M_id: Union[UUID, None] = None
     id: str
     pw: str
     name: str
     position: str
     department: str
+    created_at: Union[datetime, None] = None
     
 
     
