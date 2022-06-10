@@ -1,0 +1,40 @@
+.container{
+    width: 100vw;
+    height:100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: url('/background.jpg');
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+  }
+.total{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.logInArea{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 30vw;
+}
+.headText{
+    display: flex;
+    justify-content: center;
+    color: white;
+    text-align: center;
+    margin-bottom: 30%;
+}
+.textH{
+    font-size: 50px;
+}
+.Submit{
+    margin-top: 30px;
+    width: 340px;
+    height: 40px;
+    border-radius: 5px;
+    background-color: #FFC800;
+    color: white;
+}

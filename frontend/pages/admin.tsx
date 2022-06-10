@@ -37,6 +37,7 @@ export const Admin: NextPage = () => {
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
     const [userName, setUserName] = useState("");
+    const [phoneNum, setPhoneNum] = useState("");
     const [isCode, setIsCode] = useState("");
     const [_, setUserId] = useRecoilState(currentManagerIDState);
     const router = useRouter()
@@ -58,12 +59,11 @@ export const Admin: NextPage = () => {
                 setTitle(res.data.title);
                 setContent(res.data.contents);
                 setUserName(res.data.userName);
+                setPhoneNum(res.data.phoneNum);
             }else{
                 console.log("Error")
             }
         })
-        
-
     }
 
     const onAccept = () => {
@@ -126,7 +126,18 @@ export const Admin: NextPage = () => {
                     onClick={onComplete}>상담 완료
                 </button>
             </div>
-            <div>{status}</div>
+            <div>
+                <div>소속: {managerinfo.department}</div>
+                <div>상담사 이름 : {managerinfo.name}</div>
+                <div>상담사 직위 : {managerinfo.position}</div>
+            </div>
+            <div>
+                <div>title : {title}</div>
+                <div>content : {content}</div>
+                <div>userName : {userName}</div>
+                <div>phone number : {phoneNum}</div>
+            </div>
+
         </div>
     )
 }
