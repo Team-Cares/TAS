@@ -13,6 +13,7 @@ router = APIRouter()
 
 @router.get('/login/user/{userid}', tags=["users"])
 async def getUser(userid:str):
+    print(userid)
     if ObjectId.is_valid(userid):
         if (data := db["user"].find_one({"_id":ObjectId(userid)})) is not None:
             data['_id'] = str(data['_id'])
@@ -39,7 +40,7 @@ async def postUser(req:User):
         print(nowTime)
         db["token"].update_one({"user":jsonable_encoder(user)},{"$set":{"random_num":int(randoms),"created_at":nowTime}})
     print(user["phone_num"],randoms)
-    # print(sendSMS(user["phone_num"],randoms))
+    #print(sendSMS(user["phone_num"],randoms))
     return JSONResponse(status_code=status.HTTP_200_OK)
 
 @router.post('/auth/{token}', tags=["users"])

@@ -10,6 +10,7 @@ import {
   AccordionItem,
   AccordionPanel,
   Button,
+  color,
   Input,
   Modal,
   ModalBody,
@@ -23,6 +24,7 @@ import {
 } from '@chakra-ui/react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { currentUserIDState, currentUserQuery } from '../contexts/user';
+import { getUserInfo } from '../contexts/getuser'
 import { Server } from 'http';
 import { create } from 'domain';
 
@@ -46,27 +48,34 @@ const User: NextPage = () => {
   const [mode, setMode] = React.useState("Create")
   const [QaDatas, setQaDatas] = React.useState<Array<QaData>>([]) 
   const [targetID, setTargetID] = React.useState("");
-  const { isOpen, onOpen, onClose } = useDisclosure()
-  const userinfo = useRecoilValue(currentUserQuery)
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [userID, setUserID] = React.useState("");
+  //const userinfo = useRecoilValue(currentUserQuery);
+  const userinfo = getUserInfo();
   const tmpQaDatas : any[] = [];
-  const [status, setStatus] = React.useState("waiting")
 
   const handleTitle: React.ChangeEventHandler<HTMLInputElement> = (event) => setTitle(event.target.value)
   const handleContents: React.ChangeEventHandler<HTMLTextAreaElement> = (event) => setContents(event.target.value)
   
-  const ServerUrl = 'http://127.0.0.1:8000/user/' + String(userinfo._id);
+  //const ServerUrl = 'http://127.0.0.1:8000/user/' + String(userinfo._id);
+  const ServerUrl = 'http://127.0.0.1:8000/user/'
   const CreateUrl = 'http://127.0.0.1:8000/user/create';
-  const UpdateUrl = 'http://127.0.0.1:8000/user/'
-  
+  const UpdateUrl = 'http://127.0.0.1:8000/user/';
+
+
   React.useEffect(() => {
+    console.log(userinfo)
+    let userToken = window.localStorage.getItem("userID");
+    if (userID === null){
+      setUserID(String(userToken));
+    }
     PullData()
   }, [])
-
-
   // Originally Pulling data from DB
   // And then, saved data called "QaDatas"
   const PullData = () => {
-    axios.get(ServerUrl,{
+    let userToken = window.localStorage.getItem("userID");
+    axios.get(ServerUrl+userToken,{
       headers: {
         "Access-Control-Allow-Origin": "http://127.0.0.1:3000"
       }
@@ -77,7 +86,14 @@ const User: NextPage = () => {
         setQaDatas(tmpQaDatas);
       }
     )
-  } 
+  }
+
+  const Color = (statusCode:string) => {
+    if (statusCode==="wait"){return "yellow"}
+    else if(statusCode==="reject"){return "red"}
+    else if(statusCode==="complete"){return "green"}
+    else{return "blue"}
+  }
 
   // Create Item
   const addTopics = () => {
@@ -151,20 +167,26 @@ const User: NextPage = () => {
   }
   
   //status 반영
-  let statusTitle = "";
-  let statusColor = "";
-  if(status === "complete"){
-    statusTitle = "Complete";
-    statusColor = "green";
-  }else if(status === "reject"){
-    statusTitle = "Reject";
-    statusColor = "red";
-  }else if(status === "waiting"){
-    statusTitle = "Waiting";
-    statusColor = "yellow";
-  }
+  // let statusTitle = "";
+  // let statusColor = "";
+  // if(status === "complete"){
+  //   statusTitle = "Complete";
+  //   statusColor = "green";
+  // }else if(status === "reject"){
+  //   statusTitle = "Reject";
+  //   statusColor = "red";
+  // }else if(status === "waiting"){
+  //   statusTitle = "Waiting";
+  //   statusColor = "yellow";
+  // }else if(status === "proccesing"){
+  //   setStatus("proccesing");
+  //   statusTitle = "procesgsg";
+  //   statusColor = "blue";
+  // }
 
   // Process Mode change parts
+
+
   let content = null;
   if(mode === "Create"){
     content = <Modal isOpen={isOpen} onClose={onClose}>
@@ -220,7 +242,7 @@ const User: NextPage = () => {
             <AccordionItem key={Qadata.QA_id}>
               <AccordionButton data-toggle="collapse" className = {style.titleBtn}>
                 <p className = {style.QadataTitle}>{Qadata.title}</p>
-                <Button className = {style.statusBtn} colorScheme={statusColor}>{statusTitle}</Button>
+                <Button className = {style.statusBtn} colorScheme={Color(Qadata.status)}>{Qadata.status}</Button>
               </AccordionButton>
               <div className = {style.contentlist}>
               <AccordionPanel className = {style.AccordionPanel}>

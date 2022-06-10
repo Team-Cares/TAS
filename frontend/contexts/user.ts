@@ -20,9 +20,8 @@ export const getIsLogin = selector({
 export const currentUserQuery = selector({
     key: 'CurrentUser',
     get: async ({get}) => {
-      const response = axios.get(getuserUrl + get(currentUserIDState)).then((res) => (
-          res.data
-      ))
-      return response
-    },
+        const response = axios.get(getuserUrl + get(currentUserIDState)).then((res) => (
+            res.data
+        ))
+        return response},
   });

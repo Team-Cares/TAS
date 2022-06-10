@@ -45,6 +45,10 @@ export const Home: NextPage = () => {
     const time = useRef(299);
     const timerld = useRef<number>(0);
 
+    React.useEffect(()=>{
+        window.localStorage.clear();
+    },[]);
+
     const handleName: React.ChangeEventHandler<HTMLInputElement> = (event) => {
         setName(event.target.value);
     }
@@ -94,6 +98,7 @@ export const Home: NextPage = () => {
         axios.post(authUrl+`/${code}`, data).then((res) => {
             if (res.status == 200){
                 setUserId(res.data._id)
+                window.localStorage.setItem("userID", res.data._id)
                 router.push('/user')
             }
             
