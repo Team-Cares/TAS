@@ -17,6 +17,16 @@
     color: white;
 }
 
+.statusBtn{
+    margin-left: 75%;
+    width: 10%;
+}
+
+.QadataTitle{
+    width: 15%;
+    text-align: left;
+}
+
 .titleBtn{
     border-bottom: solid 1px white;
 }

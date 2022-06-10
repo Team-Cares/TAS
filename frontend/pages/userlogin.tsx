@@ -71,9 +71,10 @@ export const Home: NextPage = () => {
                 "Access-Control-Allow-Origin": "http://127.0.0.1:3000"
             }
         }).then((res) => {
-            if ((name.value !== null)&&(phoneNumber.value !== null)){
-                setIsCode(false)
-            }
+            /*if ((name.value !== null)&&(phoneNumber.value !== null)){
+                
+            }*/
+            setIsCode(false)
             console.log(res)
         })
     }

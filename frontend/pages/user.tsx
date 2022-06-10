@@ -49,6 +49,7 @@ const User: NextPage = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const userinfo = useRecoilValue(currentUserQuery)
   const tmpQaDatas : any[] = [];
+  const [status, setStatus] = React.useState("waiting")
 
   const handleTitle: React.ChangeEventHandler<HTMLInputElement> = (event) => setTitle(event.target.value)
   const handleContents: React.ChangeEventHandler<HTMLTextAreaElement> = (event) => setContents(event.target.value)
@@ -60,6 +61,7 @@ const User: NextPage = () => {
   React.useEffect(() => {
     PullData()
   }, [])
+
 
   // Originally Pulling data from DB
   // And then, saved data called "QaDatas"
@@ -148,6 +150,20 @@ const User: NextPage = () => {
     setContents(topic.contents);
   }
   
+  //status 반영
+  let statusTitle = "";
+  let statusColor = "";
+  if(status === "complete"){
+    statusTitle = "Complete";
+    statusColor = "green";
+  }else if(status === "reject"){
+    statusTitle = "Reject";
+    statusColor = "red";
+  }else if(status === "waiting"){
+    statusTitle = "Waiting";
+    statusColor = "yellow";
+  }
+
   // Process Mode change parts
   let content = null;
   if(mode === "Create"){
@@ -190,7 +206,7 @@ const User: NextPage = () => {
   return (
     <div className = {style.mainbody}>
       <div className = {style.maincontent}>
-        <Accordion className = {style.Accordion}>
+        <Accordion className = {style.Accordion} allowToggle>
           <AccordionItem className = {style.create}>
             <AccordionButton onClick={(event)=>{
               event.preventDefault();
@@ -202,13 +218,14 @@ const User: NextPage = () => {
           </AccordionItem>
           {QaDatas.map((Qadata) => (
             <AccordionItem key={Qadata.QA_id}>
-              <AccordionButton className = {style.titleBtn}>
-                {Qadata.title}
+              <AccordionButton data-toggle="collapse" className = {style.titleBtn}>
+                <p className = {style.QadataTitle}>{Qadata.title}</p>
+                <Button className = {style.statusBtn} colorScheme={statusColor}>{statusTitle}</Button>
               </AccordionButton>
               <div className = {style.contentlist}>
               <AccordionPanel className = {style.AccordionPanel}>
                 {Qadata.contents}
-                  <Button className = {style.btn} colorScheme='#ffab00;' mr={3} onClick={(event)=>{
+                  <Button className = {style.btn} colorScheme='#0841D8;' mr={3} onClick={(event)=>{
                     event.preventDefault();
                     onOpen();
                     reOpen(Qadata);
@@ -216,7 +233,7 @@ const User: NextPage = () => {
                   }}>
                     <FontAwesomeIcon icon={faHighlighter} />
                   </Button>
-                  <Button className = {style.btn} colorScheme='#ffab00;' mr={3} onClick={(event)=>{
+                  <Button className = {style.btn} colorScheme='#893DBA;' mr={3} onClick={(event)=>{
                     event.preventDefault();
                     deletetopics(Qadata.QA_id);
                   }}>
