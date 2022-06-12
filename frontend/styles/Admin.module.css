@@ -14,6 +14,13 @@
     font-style: normal;
 }
 
+@font-face {
+    font-family: 'GangwonEdu_OTFBoldA';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/GangwonEdu_OTFBoldA.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
 .container{
     width: 100vw;
     height: 100vh;
@@ -30,8 +37,8 @@
 }
 
 .Nav p{
-    margin-top: 1.5%;
-    font-size: 200%;
+    margin-top: 1%;
+    font-size: 250%;
     color: white;
     text-align: center;
     font-family: 'InkLipquid';
@@ -44,16 +51,16 @@
 .Nav .info{
     position: absolute;
     color: black;
-    left: 92%;
+    left: 94%;
     top: 2%;
-    width: 8%;
+    width: 6%;
     height: 8%;
     margin-right: 2%;
     background-color: black;
     z-index: 1;
 }
 .Nav .info .infoImg{
-    width: 90%;
+    width: 70%;
     height: 90%;
     color: white;
 }
@@ -155,12 +162,13 @@
     height: 100%;
     padding: 2%;
     border-right: solid 2px gray;
+    font-family: 'GangwonEdu_OTFBoldA';
 }
 
 .closeBtn{
     width: 4%;
     float: right;
-    bottom: 97%;
+    bottom: 104%;
 }
 
 .closefont{
@@ -204,8 +212,26 @@
 
 
 .AdminInfo{
-    width: 100%;
+    width: 80%;
     height: 50%;
+}
+
+.AdminInfo p{
+    font-family: 'GangwonEdu_OTFBoldA';
+}
+
+.ol{
+    font-family: 'GangwonEdu_OTFBoldA';
+    margin-bottom: 30%;
+}
+
+.ol li{
+    margin-bottom: 6%;
+}
+
+.bar3{
+    margin-left: 10%;
+    margin-bottom: 10%;
 }
 
 .Logout{

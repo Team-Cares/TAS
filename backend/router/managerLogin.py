@@ -1,6 +1,6 @@
 from json import JSONEncoder
 from fastapi import APIRouter, status, Request
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, Response
 from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
 
@@ -39,11 +39,11 @@ def createManager():
     if data is None:
         result = db['manager'].insert_one(jsonable_encoder(manager)).inserted_id
         if result:
-            return JSONResponse(status_code=status.HTTP_201_CREATED)
+            return Response(status_code=status.HTTP_201_CREATED)
         else:
-            return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST)
+            return Response(status_code=status.HTTP_400_BAD_REQUEST)
     else:
-        return JSONResponse(status_code=status.HTTP_226_IM_USED)
+        return Response(status_code=status.HTTP_226_IM_USED)
     
     
 
@@ -59,7 +59,7 @@ def getManagerInfo(M_id: str):
         }
         return JSONResponse(content=jsonable_encoder(managerData), status_code=status.HTTP_200_OK)
     else:
-        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND)
+        return Response(status_code=status.HTTP_404_NOT_FOUND)
 
 @router.post("/manager/login",tags=["Manager"])
 def managerLogin(req:ManagerLoginInfo):
@@ -71,7 +71,7 @@ def managerLogin(req:ManagerLoginInfo):
         if manager['pw'] == pw:
             return JSONResponse(content = manager['M_id'], status_code=status.HTTP_200_OK)
         else:
-            return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST)
+            return Response(status_code=status.HTTP_400_BAD_REQUEST)
     else:
-        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND)
+        return Response(status_code=status.HTTP_404_NOT_FOUND)
     

@@ -24,6 +24,7 @@ import {
 import { useRouter } from 'next/router';
 
 import style from '../styles/Admin.module.css';
+import { setRevalidateHeaders } from 'next/dist/server/send-payload';
 
 const ManagerUrl = "http://127.0.0.1:8000/manager/counserting";
 const ManagerStatusUrl = "http://127.0.0.1:8000/manager"
@@ -50,10 +51,10 @@ export const Admin: NextPage = () => {
     const { isOpen: isOpen1, onOpen, onClose} = useDisclosure();
     const { isOpen: isOpen2, onToggle} = useDisclosure();
     const [startvisible, setStratVisible] = useState(true);
-    const [boxbtnvisible, setBoxBtnVisible] = useState(true);
+    const [boxbtnvisible, setBoxBtnVisible] = useState(false);
     const [completevisible, SetCompleteVisible] = useState(false);
-    const [rejectvisible, SetRejectVisible] = useState(false);
-    const [closevisile, SetClosevisible] = useState(false);
+    const [rejectvisible, SetRejectVisible] = useState(true);
+    const [closevisile, SetClosevisible] = useState(true);
     const [barvisible, setBarVisible] = useState(true);
 
 
@@ -90,15 +91,22 @@ export const Admin: NextPage = () => {
             }
         }).then((res) => {
             console.log(res)
-            if (res.status == 200){
+            if(res.status == 200){
                 setQAId(res.data.QA_id);
                 setTitle(res.data.title);
                 setContent(res.data.contents);
                 setUserName(res.data.userName);
                 setPhoneNum(res.data.phoneNum);
-            }else{
-                console.log("Error")
+                setBoxBtnVisible(!boxbtnvisible);
+                SetRejectVisible(!rejectvisible);
             }
+        }).catch((event)=>{
+            alert("Title or Content is none");
+            setQAId("");
+            setTitle("");
+            setContent("");
+            setUserName("");
+            setPhoneNum("");
         })
     }
 
@@ -132,12 +140,13 @@ export const Admin: NextPage = () => {
     return (
         <div className={style.container}>
             <nav className = {style.Nav}>
-                <p><b>TAS</b> ADIMN</p>
+                <p><b>TAS</b> ADMIN</p>
                 <Button className = {style.info} colorScheme='blue' onClick={onOpen}>
                     <FontAwesomeIcon className={style.infoImg} icon = {faCircleUser} />
                 </Button>
             </nav>
             {startvisible && <Button className = {style.CreateBtn} colorScheme = "yellow" onClick={() => {
+                        //onStart();
                         onToggle();
                         setStratVisible(!startvisible);
                         setBarVisible(!barvisible);
@@ -151,8 +160,8 @@ export const Admin: NextPage = () => {
                     <Fade className = {style.Fade} in={isOpen2}>
                         <Box className = {style.Box} width='100%' height='100%' color='black' mt='0' bg='white' rounded='md' shadow='md'>
                             <div className = {style.Boxblock}>
-                                <div>상담 신청자 이름: {userName}</div>
-                                <div>상담 신청자 전화번호: {phoneNum}</div>
+                                <div>Name:  {userName}</div>
+                                <div>PhoneNumber:  {phoneNum}</div>
                                 <div className = {style.FormControlArea}>
                                     <FormControl className={style.FormControl} height="100%">
                                         <FormLabel htmlFor='title'>Title</FormLabel>
@@ -187,7 +196,6 @@ export const Admin: NextPage = () => {
                                         resetContents()
                                         SetRejectVisible(!rejectvisible)
                                         setBoxBtnVisible(!boxbtnvisible)
-                                        SetClosevisible(!closevisile)
                                     }}
                                     >상담거절</Button>}
                                 </div>
@@ -199,17 +207,13 @@ export const Admin: NextPage = () => {
                                         resetContents()
                                         SetRejectVisible(!rejectvisible)
                                         SetCompleteVisible(!completevisible)
-                                        SetClosevisible(!closevisile)
                                     }}
                                     >상담완료</Button>}
                                     {rejectvisible && <Button className = {style.BoxBtnNext} colorScheme='linkedin'
                                     onClick = {() => {
                                         onStart()
-                                        setBoxBtnVisible(!boxbtnvisible)
-                                        SetRejectVisible(!rejectvisible)
-                                        SetClosevisible(!closevisile)
                                     }}
-                                    >다음상담으로</Button>}
+                                    >상담 가져오기</Button>}
                                 </div>
                             </div>
                         </Box>
@@ -219,13 +223,21 @@ export const Admin: NextPage = () => {
             <Drawer onClose={onClose} isOpen={isOpen1}>
                 <DrawerOverlay />
                 <DrawerContent>
-                    <DrawerHeader className = {style.DrawerHeader} borderBottomWidth='1px'>상담원 이름</DrawerHeader>
+                    <DrawerHeader className = {style.DrawerHeader} borderBottomWidth='1px'>상담원: {managerName}</DrawerHeader>
                     <DrawerBody className = {style.DrawerBody}>
                         <div className={style.AdminImg}>
                             <FontAwesomeIcon className = {style.AdimgImgI} icon = {faContactCard}/>
                         </div>
                         <div className={style.AdminInfo}>
-                            <p>{managerName}, {position}, {department}</p>
+                            {/* <p>{managerName}, {position}, {department}</p> */}
+                            <ol className = {style.ol}>
+                                <li>Position : {position}</li>
+                                <li>Department : {department}</li>
+                            </ol>
+                            <p>완료횟수 : 8</p>
+                            <Progress className = {style.bar3} colorScheme='blue' value={80} />
+                            <p>거절횟수 : 5</p>
+                            <Progress className = {style.bar3} colorScheme='red' value={50} />
                         </div>
                     <Button className = {style.Logout}><a href = "http://localhost:3000/managerlogin">
                         <FontAwesomeIcon className = {style.LogoutI} icon={faRightFromBracket}/></a></Button>

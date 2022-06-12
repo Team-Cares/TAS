@@ -72,8 +72,6 @@ const User: NextPage = () => {
   React.useEffect(() => {
     getUserInfo();
     PullData();
-    // console.log(userName);
-    // console.log(userPhone);
   }, [userName,userPhone])
   // Originally Pulling data from DB
   // And then, saved data called "QaDatas"
@@ -126,9 +124,9 @@ const User: NextPage = () => {
 
   //Set QA Status Color
   const Color = (statusCode:string) => {
-    if (statusCode==="waiting"){return "yellow"}
-    else if(statusCode==="reject"){return "red"}
-    else if(statusCode==="complete"){return "green"}
+    if (statusCode==="Waiting"){return "yellow"}
+    else if(statusCode==="Reject"){return "red"}
+    else if(statusCode==="Complete"){return "green"}
     else{return "blue"}
   }
 
@@ -148,11 +146,15 @@ const User: NextPage = () => {
           "Access-Control-Allow-Origin": "http://127.0.0.1:3000"
       }
     }).then((res) => {
+      if (res.status == 201){
         setTitle("");
         setContents("");
         PullData();//Ready to Read Item
+        onClose();
+      }else if(res.status == 204){
+        alert("제목 혹은 내용을 입력해주세요.")
+      }
     })
-    onClose();
   }
 
   // Update Item
@@ -214,8 +216,10 @@ const User: NextPage = () => {
       <ModalHeader>상담 생성</ModalHeader>
       <ModalCloseButton />
       <ModalBody>
-        <Input value={title} onChange={handleTitle}/>
-        <Textarea value={contents} onChange={handleContents}/>
+        <div style={{fontWeight: 'bold'}}>Title</div>
+        <Input style={{borderColor: 'gray'}} value={title} onChange={handleTitle}/>
+        <div style={{fontWeight: 'bold', marginTop: '2%'}}>Contents</div>
+        <Textarea style={{borderColor: 'gray'}} value={contents} onChange={handleContents}/>
       </ModalBody>
       <ModalFooter>
         <Button colorScheme='blue' mr={3} onClick={addTopics}>
@@ -264,24 +268,28 @@ const User: NextPage = () => {
                   <Button className = {style.statusBtn} colorScheme={Color(Qadata.status)}>{Qadata.status}</Button>
                 </AccordionButton>
               <div className = {style.contentlist}>
-              <AccordionPanel style={{borderColor: 'yellow'}} className = {style.AccordionPanel}>
-                <div className = {style.aaaaa}>
-                  {Qadata.contents}
+              <AccordionPanel style={{ marginTop: '1%'}} className = {style.AccordionPanel}>
+                <div className = {style.conArea}>
+                  <div className = {style.textArea}>
+                    {Qadata.contents}
+                  </div>
+                  <div className = {style.btnArea}>
+                    <Button className = {style.btn} colorScheme='#0841D8;' mr={3} disabled={isUpdate} onClick={(event)=>{
+                      event.preventDefault();
+                      onOpen();
+                      reOpen(Qadata);
+                      setMode("Update");
+                    }}>
+                      <FontAwesomeIcon icon={faHighlighter} />
+                    </Button>
+                    <Button className = {style.btn} colorScheme='#893DBA;' mr={3} disabled={isDelete} onClick={(event)=>{
+                      event.preventDefault();
+                      deletetopics(Qadata.QA_id);
+                    }}>
+                      <FontAwesomeIcon icon={faTrash} />
+                    </Button>
+                  </div>
                 </div>
-                  <Button className = {style.btn} colorScheme='#0841D8;' mr={3} disabled={isUpdate} onClick={(event)=>{
-                    event.preventDefault();
-                    onOpen();
-                    reOpen(Qadata);
-                    setMode("Update");
-                  }}>
-                    <FontAwesomeIcon icon={faHighlighter} />
-                  </Button>
-                  <Button className = {style.btn} colorScheme='#893DBA;' mr={3} disabled={isDelete} onClick={(event)=>{
-                    event.preventDefault();
-                    deletetopics(Qadata.QA_id);
-                  }}>
-                    <FontAwesomeIcon icon={faTrash} />
-                  </Button>
               </AccordionPanel>
               </div>
             </AccordionItem>

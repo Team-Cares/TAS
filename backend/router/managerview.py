@@ -1,5 +1,5 @@
 from fastapi import APIRouter, status
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, Response
 from fastapi.encoders import jsonable_encoder
 
 from service.manager import completeQAdata, getQAdata, rejectQAdata
@@ -13,8 +13,9 @@ router = APIRouter()
 @router.get("/manager/counserting",tags=["manager"])
 def managerDataGet():
     result = getQAdata()
+    print(result)
     if result is None:
-        return JSONResponse(status_code = status.HTTP_404_NOT_FOUND)
+        return Response(status_code = status.HTTP_404_NOT_FOUND)
     return JSONResponse(content = result, status_code = status.HTTP_200_OK)
 
 @router.post("/manager/{QA_id}/{status}",tags=["manager"])

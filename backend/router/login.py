@@ -1,6 +1,6 @@
 from bson import ObjectId
 from fastapi import APIRouter, status, HTTPException
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, Response
 from fastapi.encoders import jsonable_encoder
 from datetime import datetime, timedelta
 
@@ -42,7 +42,7 @@ async def postUser(req:User):
     print(user["phone_num"],randoms)
     message = "인증번호 : " + str(randoms)
     #print(sendSMS(user["phone_num"],message))
-    return JSONResponse(status_code=status.HTTP_200_OK)
+    return Response(status_code=status.HTTP_200_OK)
 
 @router.post('/auth/{token}', tags=["users"])
 async def checkAuth(user:User, token:int):
@@ -64,9 +64,9 @@ async def checkAuth(user:User, token:int):
                 userData['_id'] = str(userData['_id'])
                 return JSONResponse(content=jsonable_encoder(userData), status_code=status.HTTP_200_OK)
             else:
-                return JSONResponse(status_code=status.HTTP_408_REQUEST_TIMEOUT)
+                return Response(status_code=status.HTTP_408_REQUEST_TIMEOUT)
         else:
-            return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST)
+            return Response(status_code=status.HTTP_400_BAD_REQUEST)
         
     raise HTTPException(status_code=404, detail=f"user not found")
     

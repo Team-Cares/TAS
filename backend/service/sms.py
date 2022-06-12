@@ -27,7 +27,7 @@ def sendSMS(phoneNum, message):
     return response
 
 def orderMessage(user:dict):
-    order = db['QA'].count_documents({"$or": [{"status" : "waiting"},{"status":"processing"}]})
+    order = db['QA'].count_documents({"$or": [{"status" : "Waiting"},{"status":"Processing"}]})
     message = "[Web발신]\n[TAS] 상담 접수 완료.\n"
     message += "상담 대기 순서: " + " [" + str(order) + "번]\n상담 대기 예상 시간: " + str((order-1) * 4) + "분"
     print(message)
