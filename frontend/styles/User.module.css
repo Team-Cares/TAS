@@ -46,6 +46,14 @@
     width: 100%;
 }
 
+.aaaaa{
+    background-color: white;
+    opacity: 0.8;
+    color: black;
+    padding: 3%;
+    border-radius: 15px;
+}
+
 .contentlist{
     width: 100%;
 }

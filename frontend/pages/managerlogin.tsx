@@ -1,5 +1,5 @@
 import type { NextPage } from 'next'
-import React, { createContext, useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { 
     Button,
@@ -17,36 +17,30 @@ import {
     useDisclosure,
 } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
+import style from '../styles/ManagerHome.module.css';
 //import { useRecoilState } from 'recoil';
 //import { currentManagerIDState} from'../contexts/manager';
-import style from '../styles/ManagerHome.module.css';
 
-const loginUrl = "http://127.0.0.1:8000/manager/login";
-const createUrl = "http://127.0.0.1:8000/create/manager";
+
 
 export const ManagerHome: NextPage = () => {
     const [Id ,setId] = useState("");
     const [passWord, setPassword] = useState("");
-    //const [_, setManagerId] = useRecoilState(currentManagerIDState);
     const router = useRouter();
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [isPw, setIsPw] = useState(true);
     const [isUser, setIsUser] = useState(true);
+    const loginUrl = "http://127.0.0.1:8000/manager/login";
+    //const [_, setManagerId] = useRecoilState(currentManagerIDState);
 
     React.useEffect(() => {
-        window.localStorage.clear();
-        //createManager()
+        window.localStorage.removeItem("ManagerID");
       }, [])
-    
-    // const createManager= () => {
-    //     axios.get(createUrl).then((res) => {
-    //         console.log(res);
-    //     })
-    // }
 
     const handleID: React.ChangeEventHandler<HTMLInputElement> = (event) => {
         setId(event.target.value);
     }
+
     const handlePW: React.ChangeEventHandler<HTMLInputElement> = (event) => {
         setPassword(event.target.value);
     }
@@ -92,8 +86,10 @@ export const ManagerHome: NextPage = () => {
                 <div className={style.logInArea}>
                     <div>
                     <div className={style.headText}>
-                        <div>
-                            <h1 className={style.textH}>T A S</h1>
+                        <div className={style.textH}>
+                            <h1>T A S
+                            <p>Admin</p>
+                            </h1>
                         </div>
                     </div>
                         <form onSubmit={handleLogin}>
@@ -101,6 +97,7 @@ export const ManagerHome: NextPage = () => {
                                 <FormLabel htmlFor='ID' style={{color: 'white'}}>ID</FormLabel>
                                 <Input
                                     id='ID'
+                                    borderColor="#FFC800"
                                     value={Id}
                                     onChange={handleID}
                                     placeholder='ID'
@@ -112,6 +109,7 @@ export const ManagerHome: NextPage = () => {
                                 <InputGroup>
                                     <Input
                                         id='PW'
+                                        borderColor="#FFC800"
                                         value={passWord}
                                         onChange={handlePW}
                                         type='password'

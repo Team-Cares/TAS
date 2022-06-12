@@ -1,9 +1,8 @@
-from fastapi import APIRouter, Request, status
+from fastapi import APIRouter, status
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
-from models.model import QA
 
-from service.manager import completeQAdata, getQAdata, rejectQAdata, acceptQAdata
+from service.manager import completeQAdata, getQAdata, rejectQAdata
 
 router = APIRouter()
 
@@ -18,14 +17,11 @@ def managerDataGet():
         return JSONResponse(status_code = status.HTTP_404_NOT_FOUND)
     return JSONResponse(content = result, status_code = status.HTTP_200_OK)
 
-
 @router.post("/manager/{QA_id}/{status}",tags=["manager"])
 async def managerPostData(QA_id: str, status: str):
     status = int(status)
     if status == 200:               # 상담사가 상담 완료 했을 경우
         result = completeQAdata(QA_id)
-    elif status == 202:             # 상담사가 상담 수락 했을 경우
-        result =  acceptQAdata(QA_id)
     elif status == 503:             # 상담사가 상담 거절했을 경우
         result = rejectQAdata(QA_id)
     return JSONResponse(status_code = result)

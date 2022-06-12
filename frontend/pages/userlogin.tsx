@@ -46,7 +46,7 @@ export const Home: NextPage = () => {
     const timerld = useRef<number>(0);
 
     React.useEffect(()=>{
-        window.localStorage.clear();
+        window.localStorage.removeItem("userID");
     },[]);
 
     const handleName: React.ChangeEventHandler<HTMLInputElement> = (event) => {
@@ -155,8 +155,10 @@ export const Home: NextPage = () => {
                 <div className={style.logInArea}>
                     <form onSubmit={isCode ? handleLogin : handleAuth}>
                         <div className={style.headText}>
-                            <div>
-                                <h1 className={style.textH}>T A S</h1>
+                            <div className={style.textH}>
+                                <h1>T A S
+                                <p>Client</p>
+                                </h1>
                             </div>
                         </div>
                         <FormControl isRequired>
@@ -276,7 +278,6 @@ export const Home: NextPage = () => {
                 )
             }    
         </div>
-        
     )
 }
 export default Home;

@@ -1,6 +1,8 @@
+from email import message
 import boto3
 import os
 from dotenv import load_dotenv
+from config.db import db
 
 load_dotenv()
 
@@ -23,3 +25,10 @@ def sendSMS(phoneNum, message):
     )
     
     return response
+
+def orderMessage(user:dict):
+    order = db['QA'].count_documents({"$or": [{"status" : "waiting"},{"status":"processing"}]})
+    message = "[Web발신]\n[TAS] 상담 접수 완료.\n"
+    message += "상담 대기 순서: " + " [" + str(order) + "번]\n상담 대기 예상 시간: " + str((order-1) * 4) + "분"
+    print(message)
+    #sendSMS(user["phone_num"], message)

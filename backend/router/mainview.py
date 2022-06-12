@@ -6,6 +6,7 @@ from fastapi import APIRouter, HTTPException, status
 from fastapi.encoders import jsonable_encoder
 from models.model import QA, QA_update
 from config.db import db
+from service.sms import orderMessage
 
 router = APIRouter()
 
@@ -18,7 +19,7 @@ async def getCounsel(userid:str):
             a = data['user']
             if a['phone_num'] == user['phone_num']:
                 datas.append(data)
-        print(datas)
+        #print(datas)
         return JSONResponse(content=jsonable_encoder(datas), status_code=status.HTTP_200_OK)
     raise HTTPException(status_code=404, detail=f"user {userid} not found")
 
@@ -28,10 +29,12 @@ async def createCounsel(req:QA):
     data['QA_id'] = uuid4()
     data["created_at"] = datetime.now()
     data["updated_at"] = data["created_at"]
-    data['status'] = "wait"
+    data['status'] = "waiting"
     result = db['QA'].insert_one(jsonable_encoder(data)).inserted_id
     created_QA = db['QA'].find_one({"_id":result})
     if created_QA is not None:
+        user = data['user']
+        orderMessage(user)
         return JSONResponse(status_code=status.HTTP_201_CREATED)
     return JSONResponse(status_code=status.HTTP_204_NO_CONTENT)
     

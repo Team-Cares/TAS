@@ -40,7 +40,8 @@ async def postUser(req:User):
         print(nowTime)
         db["token"].update_one({"user":jsonable_encoder(user)},{"$set":{"random_num":int(randoms),"created_at":nowTime}})
     print(user["phone_num"],randoms)
-    #print(sendSMS(user["phone_num"],randoms))
+    message = "인증번호 : " + str(randoms)
+    #print(sendSMS(user["phone_num"],message))
     return JSONResponse(status_code=status.HTTP_200_OK)
 
 @router.post('/auth/{token}', tags=["users"])

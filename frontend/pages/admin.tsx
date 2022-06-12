@@ -1,30 +1,28 @@
 import type { NextPage } from 'next'
 import React, { createContext, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
-// import {
-//     Button,
-//     ButtonGroup,
-//     FormControl,
-//     FormLabel,
-//     HStack,
-//     Input,
-//     InputGroup,
-//     InputLeftAddon,
-//     Modal,
-//     ModalBody,
-//     ModalCloseButton,
-//     ModalContent,
-//     ModalFooter,
-//     ModalHeader,
-//     ModalOverlay,
-//     PinInput,
-//     PinInputField,
-//     useDisclosure,
-// } from '@chakra-ui/react';
-// import { useRouter } from 'next/router';
-// import { useRecoilState, useRecoilValue } from 'recoil';
-// //import { currentManagerIDState, currentManagerQuery } from '../contexts/manager';
-// import { NodeNextRequest } from 'next/dist/server/base-http/node';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleUser, faContactCard, faRightFromBracket, faSquareXmark} from "@fortawesome/free-solid-svg-icons";
+import {
+    Box,
+    Button,
+    Drawer,
+    DrawerBody,
+    DrawerFooter,
+    DrawerHeader,
+    DrawerOverlay,
+    DrawerContent,
+    DrawerCloseButton,
+    FormControl,
+    FormLabel,
+    Fade,
+    Input,
+    Progress, 
+    Textarea,
+    useDisclosure,
+} from '@chakra-ui/react';
+import { useRouter } from 'next/router';
+
 import style from '../styles/Admin.module.css';
 
 const ManagerUrl = "http://127.0.0.1:8000/manager/counserting";
@@ -32,6 +30,7 @@ const ManagerStatusUrl = "http://127.0.0.1:8000/manager"
 
 export const Admin: NextPage = () => {
 
+    // Get ManagerToken at localStorage
     const getManagerId = () => {
         if (typeof window !== "undefined") {
             return window.localStorage.getItem("ManagerID");
@@ -44,22 +43,31 @@ export const Admin: NextPage = () => {
     const [department, setDepartment] = useState("");
     const [status, setStatus] = useState("");
     const [QA_id, setQAId] = useState("");
-    //const managerinfo = useRecoilValue(currentManagerQuery);
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
     const [userName, setUserName] = useState("");
     const [phoneNum, setPhoneNum] = useState("");
-    // const [isCode, setIsCode] = useState("");
-    // const router = useRouter()
+    const { isOpen: isOpen1, onOpen, onClose} = useDisclosure();
+    const { isOpen: isOpen2, onToggle} = useDisclosure();
+    const [startvisible, setStratVisible] = useState(true);
+    const [boxbtnvisible, setBoxBtnVisible] = useState(true);
+    const [completevisible, SetCompleteVisible] = useState(false);
+    const [rejectvisible, SetRejectVisible] = useState(false);
+    const [closevisile, SetClosevisible] = useState(false);
+    const [barvisible, setBarVisible] = useState(true);
+
 
     useEffect(() => {
-        //console.log(managerinfo);
         getMangerInfo();
-        // console.log(managerName);
-        // console.log(position);
-        // console.log(department);
       }, [])
     
+    const resetContents = () => {
+        setTitle("")
+        setContent("")
+        setUserName("")
+        setPhoneNum("")
+    }
+    // Get Admin Infomation
     const getMangerInfo = async () => {
         const getManagerUrl = "http://127.0.0.1:8000/get/manager/";
         await axios.get(getManagerUrl + managerToken,{
@@ -73,6 +81,7 @@ export const Admin: NextPage = () => {
         });
     }
     
+    // Click Start Button
     const onStart = () => {
         setStatus("Start");
         axios.get(ManagerUrl,{
@@ -93,18 +102,7 @@ export const Admin: NextPage = () => {
         })
     }
 
-    const onAccept = () => {
-        setStatus("Accept");
-        const url =  ManagerStatusUrl + "/" + QA_id + "/202"
-        axios.post(url,{
-            headers: {
-                "Access-Control-Allow-Origin": "http://127.0.0.1:3000"
-            }
-        }).then((res) => {
-            console.log(res)
-        })
-    }
-
+    // Click Reject Button 
     const onReject = () => {
         setStatus("Reject");
         const url =  ManagerStatusUrl + "/" + QA_id + "/503"
@@ -117,6 +115,7 @@ export const Admin: NextPage = () => {
         })
     }
 
+    // Click Complete Button
     const onComplete = () => {
         setStatus("Complete");
         const url =  ManagerStatusUrl + "/" + QA_id + "/200"
@@ -132,39 +131,107 @@ export const Admin: NextPage = () => {
 
     return (
         <div className={style.container}>
-            <div className={style.adminInfo}></div>
-            <div className={style.btnGroup}>
-                <button 
-                    className={style.btnStart}
-                    onClick={onStart}>상담 시작
-                </button>
-                <button 
-                    className={style.btnAccept}
-                    onClick={onAccept}>상담 수락
-                </button>
-
-                <button 
-                    className={style.btnReject}
-                    onClick={onReject}>상담 거부
-                </button>
-
-                <button 
-                    className={style.btnComplete}
-                    onClick={onComplete}>상담 완료
-                </button>
-            </div>
-            <div>
-                <div>소속: {department}</div>
-                <div>상담사 이름 : {managerName}</div>
-                <div>상담사 직위 : {position}</div>
-            </div>
-            <div>
-                <div>title : {title}</div>
-                <div>content : {content}</div>
-                <div>userName : {userName}</div>
-                <div>phone number : {phoneNum}</div>
-            </div>
-
+            <nav className = {style.Nav}>
+                <p><b>TAS</b> ADIMN</p>
+                <Button className = {style.info} colorScheme='blue' onClick={onOpen}>
+                    <FontAwesomeIcon className={style.infoImg} icon = {faCircleUser} />
+                </Button>
+            </nav>
+            {startvisible && <Button className = {style.CreateBtn} colorScheme = "yellow" onClick={() => {
+                        onToggle();
+                        setStratVisible(!startvisible);
+                        setBarVisible(!barvisible);
+                    }}><p>Start a consultation</p></Button>}
+                {barvisible && <Progress className = {style.bar} value={80} />}
+                {barvisible && <p className = {style.bar_p}>상담완료</p>}
+                {barvisible && <Progress className = {style.bar2} colorScheme='red' value={50} />}
+                {barvisible && <p className = {style.bar_p}>상담거절</p>}
+            <main className = {style.Main}>
+                <div className = {style.CreateFade}>
+                    <Fade className = {style.Fade} in={isOpen2}>
+                        <Box className = {style.Box} width='100%' height='100%' color='black' mt='0' bg='white' rounded='md' shadow='md'>
+                            <div className = {style.Boxblock}>
+                                <div>상담 신청자 이름: {userName}</div>
+                                <div>상담 신청자 전화번호: {phoneNum}</div>
+                                <div className = {style.FormControlArea}>
+                                    <FormControl className={style.FormControl} height="100%">
+                                        <FormLabel htmlFor='title'>Title</FormLabel>
+                                            <Input borderColor="dark" value={title} type='email' />
+                                        <div className = {style.FormContent}>
+                                            <FormLabel htmlFor='content'>Content</FormLabel>
+                                            <Textarea borderColor="black" height="80%" value={content}/>
+                                        </div>
+                                    </FormControl>
+                                </div>
+                                {closevisile && <Button className = {style.closeBtn} colorScheme='white;'
+                                onClick={() => {
+                                    onToggle();
+                                    setStratVisible(!startvisible);
+                                    setBarVisible(!barvisible);
+                                    }}>
+                                    <FontAwesomeIcon className = {style.closefont} icon = {faSquareXmark} />
+                                </Button>}
+                            </div>
+                            <div className = {style.BoxBtnArea}>
+                                <div className = {style.BoxBtnArea1}>
+                                    {boxbtnvisible && <Button className = {style.BoxBtn} colorScheme='whatsapp'
+                                    onClick = {() => {
+                                        SetCompleteVisible(!completevisible)
+                                        setBoxBtnVisible(!boxbtnvisible)
+                                    }}
+                                    >
+                                        상담시작</Button>}
+                                    {boxbtnvisible && <Button className = {style.BoxBtn} colorScheme='orange'
+                                        onClick = {() => {
+                                        onReject()
+                                        resetContents()
+                                        SetRejectVisible(!rejectvisible)
+                                        setBoxBtnVisible(!boxbtnvisible)
+                                        SetClosevisible(!closevisile)
+                                    }}
+                                    >상담거절</Button>}
+                                </div>
+                                <div className = {style.BoxBtnArea2}>
+                                    {}
+                                    {completevisible && <Button className = {style.BoxBtnComplete} colorScheme='whatsapp'
+                                    onClick = {() => {
+                                        onComplete()
+                                        resetContents()
+                                        SetRejectVisible(!rejectvisible)
+                                        SetCompleteVisible(!completevisible)
+                                        SetClosevisible(!closevisile)
+                                    }}
+                                    >상담완료</Button>}
+                                    {rejectvisible && <Button className = {style.BoxBtnNext} colorScheme='linkedin'
+                                    onClick = {() => {
+                                        onStart()
+                                        setBoxBtnVisible(!boxbtnvisible)
+                                        SetRejectVisible(!rejectvisible)
+                                        SetClosevisible(!closevisile)
+                                    }}
+                                    >다음상담으로</Button>}
+                                </div>
+                            </div>
+                        </Box>
+                    </Fade>
+                </div>
+            </main>
+            <Drawer onClose={onClose} isOpen={isOpen1}>
+                <DrawerOverlay />
+                <DrawerContent>
+                    <DrawerHeader className = {style.DrawerHeader} borderBottomWidth='1px'>상담원 이름</DrawerHeader>
+                    <DrawerBody className = {style.DrawerBody}>
+                        <div className={style.AdminImg}>
+                            <FontAwesomeIcon className = {style.AdimgImgI} icon = {faContactCard}/>
+                        </div>
+                        <div className={style.AdminInfo}>
+                            <p>{managerName}, {position}, {department}</p>
+                        </div>
+                    <Button className = {style.Logout}><a href = "http://localhost:3000/managerlogin">
+                        <FontAwesomeIcon className = {style.LogoutI} icon={faRightFromBracket}/></a></Button>
+                    </DrawerBody>
+                </DrawerContent>
+            </Drawer>
         </div>
     )
 }

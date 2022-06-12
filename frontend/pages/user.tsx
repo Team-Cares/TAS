@@ -10,7 +10,6 @@ import {
   AccordionItem,
   AccordionPanel,
   Button,
-  color,
   Input,
   Modal,
   ModalBody,
@@ -22,12 +21,12 @@ import {
   Textarea,
   useDisclosure
 } from '@chakra-ui/react';
-import { constSelector, useRecoilState, useRecoilValue } from 'recoil';
+//import { constSelector, useRecoilState, useRecoilValue } from 'recoil';
 //import { currentUserIDState, currentUserQuery } from '../contexts/user';
 //import { currentUserQuery } from '../contexts/getuser';
 //import { getUserInfo } from '../contexts/getuser';
-import { Server } from 'http';
-import { create } from 'domain';
+// import { Server } from 'http';
+// import { create } from 'domain';
 
 interface QaData {
   QA_id: string;
@@ -60,30 +59,43 @@ const User: NextPage = () => {
   const [QaDatas, setQaDatas] = React.useState<Array<QaData>>([]);
   const [targetID, setTargetID] = React.useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
-  //let userInfo = {};
+  const [isDelete, setDelete] = useState(false);
+  const [isUpdate, setUpdate] = useState(false);
   const tmpQaDatas : any[] = [];
 
   const handleTitle: React.ChangeEventHandler<HTMLInputElement> = (event) => setTitle(event.target.value)
   const handleContents: React.ChangeEventHandler<HTMLTextAreaElement> = (event) => setContents(event.target.value)
   
-  //const ServerUrl = 'http://127.0.0.1:8000/user/' + String(userinfo._id);
-  
-  //const getuserUrl = "http://127.0.0.1:8000/login/user/";
   const ServerUrl = 'http://127.0.0.1:8000/user/';
-  const CreateUrl = 'http://127.0.0.1:8000/user/create';
-  const UpdateUrl = 'http://127.0.0.1:8000/user/';
   
 
   React.useEffect(() => {
     getUserInfo();
     PullData();
-    console.log(userName);
-    console.log(userPhone);
+    // console.log(userName);
+    // console.log(userPhone);
   }, [userName,userPhone])
   // Originally Pulling data from DB
   // And then, saved data called "QaDatas"
 
-const getUserInfo = async () => {
+  //Set disabled Status
+  const setDisabledButton = (status:String) =>{
+    if (status == "waiting"){
+        setDelete(false);
+        setUpdate(false);
+    }
+    else if(status == "processing"){
+        setDelete(true);
+        setUpdate(true);
+    }
+    else{
+      setDelete(false);
+      setUpdate(true);
+    }
+  }
+
+  //Get User infomation 
+  const getUserInfo = async () => {
   const getuserUrl = "http://127.0.0.1:8000/login/user/";
   axios.get(getuserUrl + userToken,{
     headers: {
@@ -94,8 +106,9 @@ const getUserInfo = async () => {
       setUserPhone(res.data.phone_num);
 
   });
-}
+  }
 
+  //Get QA Data List
   const PullData = () => {
     axios.get(ServerUrl+userToken,{
       headers: {
@@ -111,8 +124,9 @@ const getUserInfo = async () => {
     )
   }
 
+  //Set QA Status Color
   const Color = (statusCode:string) => {
-    if (statusCode==="wait"){return "yellow"}
+    if (statusCode==="waiting"){return "yellow"}
     else if(statusCode==="reject"){return "red"}
     else if(statusCode==="complete"){return "green"}
     else{return "blue"}
@@ -120,6 +134,7 @@ const getUserInfo = async () => {
 
   // Create Item
   const addTopics = async () => {
+    const CreateUrl = ServerUrl + "create";
     const data = {
       title,
       contents,
@@ -151,7 +166,7 @@ const getUserInfo = async () => {
       contents,
     }
     
-    let updateurl = UpdateUrl + String(target_id);
+    let updateurl = ServerUrl + String(target_id);
     axios.put(updateurl, data, {
       headers: {
         "Access-Control-Allow-Origin": "http://127.0.0.1:3000"
@@ -170,7 +185,7 @@ const getUserInfo = async () => {
   
   // Delete Item
   const deletetopics = (target_id:string) => {
-    let url = UpdateUrl + String(target_id);
+    let url = ServerUrl + String(target_id);
     axios.delete(url, {
       headers:{
         "Access-Control-Allow-Origin": "http://127.0.0.1:3000"
@@ -188,24 +203,6 @@ const getUserInfo = async () => {
     setContents(topic.contents);
   }
   
-  //status 반영
-  // let statusTitle = "";
-  // let statusColor = "";
-  // if(status === "complete"){
-  //   statusTitle = "Complete";
-  //   statusColor = "green";
-  // }else if(status === "reject"){
-  //   statusTitle = "Reject";
-  //   statusColor = "red";
-  // }else if(status === "waiting"){
-  //   statusTitle = "Waiting";
-  //   statusColor = "yellow";
-  // }else if(status === "proccesing"){
-  //   setStatus("proccesing");
-  //   statusTitle = "procesgsg";
-  //   statusColor = "blue";
-  // }
-
   // Process Mode change parts
 
 
@@ -262,14 +259,16 @@ const getUserInfo = async () => {
           </AccordionItem>
           {QaDatas.map((Qadata) => (
             <AccordionItem key={Qadata.QA_id}>
-              <AccordionButton data-toggle="collapse" className = {style.titleBtn}>
-                <p className = {style.QadataTitle}>{Qadata.title}</p>
-                <Button className = {style.statusBtn} colorScheme={Color(Qadata.status)}>{Qadata.status}</Button>
-              </AccordionButton>
+                <AccordionButton data-toggle="collapse" className = {style.titleBtn} onClick={(event) =>{setDisabledButton(Qadata.status)}}>
+                  <p className = {style.QadataTitle}>{Qadata.title}</p>
+                  <Button className = {style.statusBtn} colorScheme={Color(Qadata.status)}>{Qadata.status}</Button>
+                </AccordionButton>
               <div className = {style.contentlist}>
-              <AccordionPanel className = {style.AccordionPanel}>
-                {Qadata.contents}
-                  <Button className = {style.btn} colorScheme='#0841D8;' mr={3} onClick={(event)=>{
+              <AccordionPanel style={{borderColor: 'yellow'}} className = {style.AccordionPanel}>
+                <div className = {style.aaaaa}>
+                  {Qadata.contents}
+                </div>
+                  <Button className = {style.btn} colorScheme='#0841D8;' mr={3} disabled={isUpdate} onClick={(event)=>{
                     event.preventDefault();
                     onOpen();
                     reOpen(Qadata);
@@ -277,7 +276,7 @@ const getUserInfo = async () => {
                   }}>
                     <FontAwesomeIcon icon={faHighlighter} />
                   </Button>
-                  <Button className = {style.btn} colorScheme='#893DBA;' mr={3} onClick={(event)=>{
+                  <Button className = {style.btn} colorScheme='#893DBA;' mr={3} disabled={isDelete} onClick={(event)=>{
                     event.preventDefault();
                     deletetopics(Qadata.QA_id);
                   }}>

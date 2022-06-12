@@ -10,10 +10,10 @@ from fastapi import status
 # waiting, complete, proccesing, reject, accept
 
 def getQAdata():
-    qaData = db['QA'].find_one({"status":"wait"},{"_id":0})
+    qaData = db['QA'].find_one({"status":"waiting"},{"_id":0})
     if qaData is not None:
         print(qaData['QA_id'])
-        db['QA'].update_one({"QA_id":qaData['QA_id']},{"$set":{"status":"proccesing"}})
+        db['QA'].update_one({"QA_id":qaData['QA_id']},{"$set":{"status":"processing"}})
         sendData = {
             "QA_id": qaData['QA_id'],
             "title": qaData['title'],
@@ -39,9 +39,9 @@ def rejectQAdata(QA_id:str):
     else:
         return status.HTTP_404_NOT_FOUND
 
-def acceptQAdata(QA_id:str):
-    result = db['QA'].update_one({"QA_id":str(QA_id)},{"$set":{"status":"accepte"}})
-    if result.modified_count == 1:
-        return status.HTTP_202_ACCEPTED
-    else:
-        return status.HTTP_404_NOT_FOUND
+# def acceptQAdata(QA_id:str):
+#     result = db['QA'].update_one({"QA_id":str(QA_id)},{"$set":{"status":"accepte"}})
+#     if result.modified_count == 1:
+#         return status.HTTP_202_ACCEPTED
+#     else:
+#         return status.HTTP_404_NOT_FOUND
