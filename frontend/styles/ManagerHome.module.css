@@ -1,0 +1,62 @@
+@font-face {
+    font-family: 'InkLipquid';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/InkLipquid.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'GmarketSansBold';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansBold.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.container{
+    width: 100vw;
+    height:100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: url('/background.jpg');
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+  }
+.total{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.logInArea{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 30vw;
+}
+.headText{
+    display: flex;
+    justify-content: center;
+    color: white;
+    text-align: center;
+    margin-bottom: 30%;
+}
+.textH{
+    font-family: 'InkLipquid';
+    font-size: 50px;
+    color: #FFC800;
+}
+
+.textH p{
+    font-size: 30px;
+    color: white;
+}
+.Submit{
+    margin-top: 30px;
+    width: 340px;
+    height: 40px;
+    border-radius: 5px;
+    background-color: black;
+    color: #FFC800;
+    font-family: 'GmarketSansBold';
+}

@@ -1,6 +1,6 @@
 import axios from "axios";
 import {
-    atom, selector, useRecoilValue
+    atom, selector, useRecoilState
 } from "recoil";
 
 const getuserUrl = "http://127.0.0.1:8000/login/user/";
@@ -20,9 +20,8 @@ export const getIsLogin = selector({
 export const currentUserQuery = selector({
     key: 'CurrentUser',
     get: async ({get}) => {
-      const response = axios.get(getuserUrl + get(currentUserIDState)).then((res) => (
-          res.data
-      ))
-      return response
-    },
+        const response = axios.get(getuserUrl + get(currentUserIDState)).then((res) => (
+            res.data
+        ))
+        return response},
   });

@@ -1,13 +1,23 @@
-from typing import Optional
-
 from fastapi import FastAPI
+from router import mainview, login, managerview, managerLogin
+from fastapi.middleware.cors import CORSMiddleware
+
 
 app = FastAPI()
 
-@app.get("/")
-def read_root():
-    return {"Hello": "FastAPI"}
+origins = [
+    "http://localhost:3000",
+]
 
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Optional[str] = None):
-    return {"item_id": item_id, "q": q}
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+app.include_router(mainview.router)
+app.include_router(login.router)
+app.include_router(managerview.router)
+app.include_router(managerLogin.router)

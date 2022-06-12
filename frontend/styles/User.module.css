@@ -1,0 +1,64 @@
+.mainbody{
+    margin: 0;
+    width: 100vw;
+    height: 100vh;
+    background-image: url("../img/header-bg.jpg");
+    background-size: cover;
+    background-position: center;
+    opacity: 1;
+}
+
+.maincontent{
+    width: 70%;
+    height: 50%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 5%;
+    color: white;
+}
+
+.statusBtn{
+    margin-left: 75%;
+    width: 10%;
+}
+
+.QadataTitle{
+    width: 15%;
+    text-align: left;
+}
+
+.titleBtn{
+    border-bottom: solid 1px white;
+}
+
+.create{
+    width: 5%;
+    border-top: none;
+    margin-bottom: 3%;
+}
+
+.createbtn{
+    color: #ffc800;
+    font-size: 170%;
+}
+
+.AccordionPanel{
+    width: 100%;
+}
+
+.conArea{
+    width: 100%;
+    background-color: #ffffff;
+    background-color: rgba( 255, 255, 255, 0.7 );
+    color: black;
+    padding: 2%;
+    border-radius: 5px;
+}
+
+.contentlist{
+    width: 100%;
+}
+.btnArea{
+    display: flex;
+    justify-content: flex-end;
+}

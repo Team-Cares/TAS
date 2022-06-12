@@ -1,0 +1,260 @@
+
+
+@font-face {
+    font-family: 'InkLipquid';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/InkLipquid.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'GmarketSansBold';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansBold.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'GangwonEdu_OTFBoldA';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/GangwonEdu_OTFBoldA.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.container{
+    width: 100vw;
+    height: 100vh;
+    background-image: url('../img/header-bg.jpg');
+    background-size: cover;
+}
+
+/*네브바*/
+.Nav{
+    width: 100%;
+    height: 12%;
+    background-color: black;
+    float:right;
+}
+
+.Nav p{
+    margin-top: 1%;
+    font-size: 250%;
+    color: white;
+    text-align: center;
+    font-family: 'InkLipquid';
+}
+
+.Nav p b{
+    color: #ffc800;
+}
+
+.Nav .info{
+    position: absolute;
+    color: black;
+    left: 94%;
+    top: 2%;
+    width: 6%;
+    height: 8%;
+    margin-right: 2%;
+    background-color: black;
+    z-index: 1;
+}
+.Nav .info .infoImg{
+    width: 70%;
+    height: 90%;
+    color: white;
+}
+
+
+.Main{
+    position: absolute;
+    bottom: 0.1%;
+    width: 100%;
+    height: 87.3%;
+}
+
+.CreateBtn{
+    width: 25%;
+    color: black;
+    left: 38%;
+    margin-top: 10%;
+    z-index: 1;
+}
+
+.bar{
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 5%;
+    width: 40%;
+}
+
+.bar2{
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 5%;
+    width: 40%;
+}
+
+.CreateBtn p{
+    font-family: 'GmarketSansBold';
+    font-size: 100%;
+}
+.CreateFade{
+    width: 100%;
+    height: 80%;
+}
+
+.Fade{
+    width: 65%;
+    height: 90%;
+    margin: auto;
+    margin-top: 2%;
+    border-radius: 50%;
+}
+
+.bar_p{
+    color: white;
+    text-align: center;
+    margin-top: 1%;
+}
+
+.Box{
+    display:flex;
+    flex-direction: column;
+}
+
+.BoxBtnArea{
+    width: 100%;
+    height: 15%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: black;
+}
+
+.BoxBtnArea1{
+    display: flex;
+    justify-content: space-around;
+}
+
+.BoxBtnArea2{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.BoxBtn{
+    width: 25%;
+    flex-wrap: wrap;
+    margin-right: 1%;
+}
+
+.BoxBtnComplete{
+    width: 35%;
+}
+
+.BoxBtnNext{
+    width: 35%;
+}
+
+.Boxblock{
+    width: 100%;
+    height: 100%;
+    padding: 2%;
+    border-right: solid 2px gray;
+    font-family: 'GangwonEdu_OTFBoldA';
+}
+
+.closeBtn{
+    width: 4%;
+    float: right;
+    bottom: 104%;
+}
+
+.closefont{
+    font-size: 200%;
+    color: black;
+}
+
+.FormControlArea{
+    height: 85%;
+}
+
+.FormControl{
+    margin-top: 2%;
+}
+
+.FormContent{
+    margin-top: 2%;
+    height: 70%;
+}
+
+.DrawerHeader{
+    text-align: center;
+    background-color: black;
+    color: white;
+}
+
+.DrawerBody{
+    background-color: black;
+    color: white;
+}
+
+.AdminImg{
+    width: 110%;
+    height: 40%;
+    font-size: 150px;
+    text-align: center;
+}
+.AdimgImgI{
+    color: #ffc800;
+}
+
+
+.AdminInfo{
+    width: 80%;
+    height: 50%;
+}
+
+.AdminInfo p{
+    font-family: 'GangwonEdu_OTFBoldA';
+}
+
+.ol{
+    font-family: 'GangwonEdu_OTFBoldA';
+    margin-bottom: 30%;
+}
+
+.ol li{
+    margin-bottom: 6%;
+}
+
+.bar3{
+    margin-left: 10%;
+    margin-bottom: 10%;
+}
+
+.Logout{
+    margin-left: 80%;
+}
+
+.LogoutI{
+    color: black;
+}
+
+.btnStart{
+    border: 1px solid black;
+}
+
+.btnAccept{
+    border: 1px solid black;
+}
+
+.btnReject{
+    border: 1px solid black;
+}
+
+.btnComplete{
+    border: 1px solid black;
+}
+
