@@ -22,9 +22,10 @@ import {
   Textarea,
   useDisclosure
 } from '@chakra-ui/react';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { currentUserIDState, currentUserQuery } from '../contexts/user';
-import { getUserInfo } from '../contexts/getuser'
+import { constSelector, useRecoilState, useRecoilValue } from 'recoil';
+//import { currentUserIDState, currentUserQuery } from '../contexts/user';
+//import { currentUserQuery } from '../contexts/getuser';
+//import { getUserInfo } from '../contexts/getuser';
 import { Server } from 'http';
 import { create } from 'domain';
 
@@ -43,43 +44,65 @@ interface QaData {
 }
 
 const User: NextPage = () => {
-  const [title, setTitle] = React.useState("")
-  const [contents, setContents] = React.useState("")
-  const [mode, setMode] = React.useState("Create")
-  const [QaDatas, setQaDatas] = React.useState<Array<QaData>>([]) 
+
+  const getUserId = () => {
+    if (typeof window !== "undefined") {
+      return window.localStorage.getItem("userID");
+    }
+  }
+
+  const [ userToken ] = useState(getUserId);
+  const [userName, setUserName] = React.useState("");
+  const [userPhone, setUserPhone] = React.useState("");
+  const [title, setTitle] = React.useState("");
+  const [contents, setContents] = React.useState("");
+  const [mode, setMode] = React.useState("Create");
+  const [QaDatas, setQaDatas] = React.useState<Array<QaData>>([]);
   const [targetID, setTargetID] = React.useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [userID, setUserID] = React.useState("");
-  //const userinfo = useRecoilValue(currentUserQuery);
-  const userinfo = getUserInfo();
+  //let userInfo = {};
   const tmpQaDatas : any[] = [];
 
   const handleTitle: React.ChangeEventHandler<HTMLInputElement> = (event) => setTitle(event.target.value)
   const handleContents: React.ChangeEventHandler<HTMLTextAreaElement> = (event) => setContents(event.target.value)
   
   //const ServerUrl = 'http://127.0.0.1:8000/user/' + String(userinfo._id);
-  const ServerUrl = 'http://127.0.0.1:8000/user/'
+  
+  //const getuserUrl = "http://127.0.0.1:8000/login/user/";
+  const ServerUrl = 'http://127.0.0.1:8000/user/';
   const CreateUrl = 'http://127.0.0.1:8000/user/create';
   const UpdateUrl = 'http://127.0.0.1:8000/user/';
-
+  
 
   React.useEffect(() => {
-    console.log(userinfo)
-    let userToken = window.localStorage.getItem("userID");
-    if (userID === null){
-      setUserID(String(userToken));
-    }
-    PullData()
-  }, [])
+    getUserInfo();
+    PullData();
+    console.log(userName);
+    console.log(userPhone);
+  }, [userName,userPhone])
   // Originally Pulling data from DB
   // And then, saved data called "QaDatas"
+
+const getUserInfo = async () => {
+  const getuserUrl = "http://127.0.0.1:8000/login/user/";
+  axios.get(getuserUrl + userToken,{
+    headers: {
+      "Access-Control-Allow-Origin": "http://127.0.0.1:3000"
+    }
+  }).then((res) => {
+      setUserName(res.data.name);
+      setUserPhone(res.data.phone_num);
+
+  });
+}
+
   const PullData = () => {
-    let userToken = window.localStorage.getItem("userID");
     axios.get(ServerUrl+userToken,{
       headers: {
         "Access-Control-Allow-Origin": "http://127.0.0.1:3000"
       }
     }).then((res) => {
+        console.log(res)
         for(let i=0; i<res.data.length; i++){
           tmpQaDatas.push(res.data[i]);
         }
@@ -96,17 +119,16 @@ const User: NextPage = () => {
   }
 
   // Create Item
-  const addTopics = () => {
+  const addTopics = async () => {
     const data = {
       title,
       contents,
       user: {
-        name : userinfo.name,
-        phone_num : userinfo.phone_num
+        name : userName,
+        phone_num : userPhone
       }
     }
-
-    axios.post(CreateUrl, data, {
+    await axios.post(CreateUrl, data, {
       headers: {
           "Access-Control-Allow-Origin": "http://127.0.0.1:3000"
       }

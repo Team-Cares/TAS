@@ -37,7 +37,7 @@ export const Home: NextPage = () => {
     const [code, setCode] = useState("");
     const [isCode, setIsCode] = useState(true);
     const [isTime, setIsTime] = useState(true);
-    const [_, setUserId] = useRecoilState(currentUserIDState);
+    //const [_, setUserId] = useRecoilState(currentUserIDState);
     const router = useRouter()
     const [min, setMin] = useState("05");
     const [sec, setSec] = useState("00");
@@ -97,7 +97,7 @@ export const Home: NextPage = () => {
 
         axios.post(authUrl+`/${code}`, data).then((res) => {
             if (res.status == 200){
-                setUserId(res.data._id)
+                //setUserId(res.data._id)
                 window.localStorage.setItem("userID", res.data._id)
                 router.push('/user')
             }

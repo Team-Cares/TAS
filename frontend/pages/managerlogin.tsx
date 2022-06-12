@@ -17,8 +17,8 @@ import {
     useDisclosure,
 } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
-import { useRecoilState } from 'recoil';
-import { currentManagerIDState} from'../contexts/manager';
+//import { useRecoilState } from 'recoil';
+//import { currentManagerIDState} from'../contexts/manager';
 import style from '../styles/ManagerHome.module.css';
 
 const loginUrl = "http://127.0.0.1:8000/manager/login";
@@ -27,21 +27,22 @@ const createUrl = "http://127.0.0.1:8000/create/manager";
 export const ManagerHome: NextPage = () => {
     const [Id ,setId] = useState("");
     const [passWord, setPassword] = useState("");
-    const [_, setManagerId] = useRecoilState(currentManagerIDState);
+    //const [_, setManagerId] = useRecoilState(currentManagerIDState);
     const router = useRouter();
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [isPw, setIsPw] = useState(true);
     const [isUser, setIsUser] = useState(true);
 
     React.useEffect(() => {
-        createManager()
+        window.localStorage.clear();
+        //createManager()
       }, [])
     
-    const createManager= () => {
-        axios.get(createUrl).then((res) => {
-            console.log(res);
-        })
-    }
+    // const createManager= () => {
+    //     axios.get(createUrl).then((res) => {
+    //         console.log(res);
+    //     })
+    // }
 
     const handleID: React.ChangeEventHandler<HTMLInputElement> = (event) => {
         setId(event.target.value);
@@ -64,7 +65,8 @@ export const ManagerHome: NextPage = () => {
         }).then((res) => {
             console.log(res);
             if (res.status == 200){
-                setManagerId(res.data);
+                window.localStorage.setItem("ManagerID", res.data);
+                //setManagerId(res.data);
                 router.push('/admin');
             }
         }).catch((e)=>{

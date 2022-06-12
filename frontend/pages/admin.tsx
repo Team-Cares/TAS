@@ -1,50 +1,77 @@
 import type { NextPage } from 'next'
 import React, { createContext, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
-import {
-    Button,
-    ButtonGroup,
-    FormControl,
-    FormLabel,
-    HStack,
-    Input,
-    InputGroup,
-    InputLeftAddon,
-    Modal,
-    ModalBody,
-    ModalCloseButton,
-    ModalContent,
-    ModalFooter,
-    ModalHeader,
-    ModalOverlay,
-    PinInput,
-    PinInputField,
-    useDisclosure,
-} from '@chakra-ui/react';
-import { useRouter } from 'next/router';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { currentManagerIDState, currentManagerQuery } from '../contexts/manager';
-import { NodeNextRequest } from 'next/dist/server/base-http/node';
+// import {
+//     Button,
+//     ButtonGroup,
+//     FormControl,
+//     FormLabel,
+//     HStack,
+//     Input,
+//     InputGroup,
+//     InputLeftAddon,
+//     Modal,
+//     ModalBody,
+//     ModalCloseButton,
+//     ModalContent,
+//     ModalFooter,
+//     ModalHeader,
+//     ModalOverlay,
+//     PinInput,
+//     PinInputField,
+//     useDisclosure,
+// } from '@chakra-ui/react';
+// import { useRouter } from 'next/router';
+// import { useRecoilState, useRecoilValue } from 'recoil';
+// //import { currentManagerIDState, currentManagerQuery } from '../contexts/manager';
+// import { NodeNextRequest } from 'next/dist/server/base-http/node';
 import style from '../styles/Admin.module.css';
 
 const ManagerUrl = "http://127.0.0.1:8000/manager/counserting";
 const ManagerStatusUrl = "http://127.0.0.1:8000/manager"
 
 export const Admin: NextPage = () => {
+
+    const getManagerId = () => {
+        if (typeof window !== "undefined") {
+            return window.localStorage.getItem("ManagerID");
+        }
+    }
+
+    const [managerToken] = useState(getManagerId);
+    const [managerName, setManagerName] = useState("");
+    const [position, setPosition] = useState("");
+    const [department, setDepartment] = useState("");
     const [status, setStatus] = useState("");
     const [QA_id, setQAId] = useState("");
-    const managerinfo = useRecoilValue(currentManagerQuery)
+    //const managerinfo = useRecoilValue(currentManagerQuery);
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
     const [userName, setUserName] = useState("");
     const [phoneNum, setPhoneNum] = useState("");
-    const [isCode, setIsCode] = useState("");
-    const [_, setUserId] = useRecoilState(currentManagerIDState);
-    const router = useRouter()
+    // const [isCode, setIsCode] = useState("");
+    // const router = useRouter()
 
-    React.useEffect(() => {
-        console.log(managerinfo);
+    useEffect(() => {
+        //console.log(managerinfo);
+        getMangerInfo();
+        // console.log(managerName);
+        // console.log(position);
+        // console.log(department);
       }, [])
+    
+    const getMangerInfo = async () => {
+        const getManagerUrl = "http://127.0.0.1:8000/get/manager/";
+        await axios.get(getManagerUrl + managerToken,{
+          headers: {
+            "Access-Control-Allow-Origin": "http://127.0.0.1:3000"
+          }
+        }).then((res) => {
+            setManagerName(res.data.name);
+            setPosition(res.data.position);
+            setDepartment(res.data.department);
+        });
+    }
     
     const onStart = () => {
         setStatus("Start");
@@ -127,9 +154,9 @@ export const Admin: NextPage = () => {
                 </button>
             </div>
             <div>
-                <div>소속: {managerinfo.department}</div>
-                <div>상담사 이름 : {managerinfo.name}</div>
-                <div>상담사 직위 : {managerinfo.position}</div>
+                <div>소속: {department}</div>
+                <div>상담사 이름 : {managerName}</div>
+                <div>상담사 직위 : {position}</div>
             </div>
             <div>
                 <div>title : {title}</div>
